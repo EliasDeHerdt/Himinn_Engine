@@ -81,8 +81,17 @@
     <ClInclude Include="GameObject.h">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="TextObject.h">
-      <Filter>Objects</Filter>
+    <ClInclude Include="TextComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,8 +134,17 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="TextObject.cpp">
-      <Filter>Objects</Filter>
+    <ClCompile Include="TextComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

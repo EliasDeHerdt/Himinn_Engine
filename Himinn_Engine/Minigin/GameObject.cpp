@@ -5,30 +5,50 @@
 
 Himinn::GameObject::~GameObject() = default;
 
-void Himinn::GameObject::Update()
+bool Himinn::GameObject::AddComponent(shared_ptr<Component> component)
 {
-}
+	for (shared_ptr<Component> comp : m_Components) {
 
-void Himinn::GameObject::LateUpdate()
-{
+		if (typeid(*comp) == typeid(*component))
+			return false;
+	}
+	m_Components.push_back(component);
+	return true;
 }
 
 void Himinn::GameObject::FixedUpdate()
 {
+	for (shared_ptr<Component> comp : m_Components)
+		comp->FixedUpdate();
+}
+
+void Himinn::GameObject::Update()
+{
+	for (shared_ptr<Component> comp : m_Components)
+		comp->Update();
+}
+
+void Himinn::GameObject::LateUpdate()
+{
+	for (shared_ptr<Component> comp : m_Components)
+		comp->LateUpdate();
 }
 
 void Himinn::GameObject::Render() const
 {
-	const auto pos = m_Transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
-}
+	if (m_ShouldRender) {
 
-void Himinn::GameObject::SetTexture(const std::string& filename)
-{
-	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
+		for (shared_ptr<Component> comp : m_Components)
+			comp->Render(m_Transform);
+	}
 }
 
 void Himinn::GameObject::SetPosition(float x, float y)
 {
 	m_Transform.SetPosition(x, y, 0.0f);
+}
+
+const Himinn::Transform& Himinn::GameObject::GetTransform() const
+{
+	return m_Transform;
 }
