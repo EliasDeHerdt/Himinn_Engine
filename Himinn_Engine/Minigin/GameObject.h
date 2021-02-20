@@ -30,16 +30,17 @@ namespace Himinn
 
 		bool AddComponent(shared_ptr<Component> component);
 		template<typename T>
-		shared_ptr<T> GetComponent() const {
-			shared_ptr<T> pointer;
+		weak_ptr<T> GetComponent() const {
+			weak_ptr<T> weak;
 			for (shared_ptr<Component> comp : m_Components) {
 
-				pointer = dynamic_cast<shared_ptr<T>>(comp);
-				if (pointer != nullptr)
-					return pointer;
+				weak = std::dynamic_pointer_cast<T>(comp);
+				if (weak.lock() != nullptr) {
+					return weak;
+				}
 			}
 
-			return nullptr;
+			return weak;
 		}
 	private:
 		bool m_ShouldRender = true;

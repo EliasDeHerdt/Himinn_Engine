@@ -14,6 +14,7 @@
 #include "TextComponent.h"
 #include "ImageComponent.h"
 #include "FPSComponent.h"
+#include "InputComponent.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -48,32 +49,61 @@ void Himinn::Minigin::LoadGame() const
 {
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
-	auto imgComp = make_shared<ImageComponent>("background.jpg");
+	// Image Components
+	// Background
 	auto go = std::make_shared<GameObject>();
+	auto imgComp = make_shared<ImageComponent>("background.jpg");
+	
 	go->AddComponent(imgComp);
 	scene.Add(go);
 
-	imgComp = make_shared<ImageComponent>("logo.png");
+	// Logo
 	go = std::make_shared<GameObject>();
+	imgComp = make_shared<ImageComponent>("logo.png");
+
 	go->SetPosition(216, 180);
 	go->AddComponent(imgComp);
 	scene.Add(go);
 
+	// Text Components
+	// FPS
 	auto color = SDL_Color{ 0, 255, 0 };
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	auto FPSComp = make_shared<FPSComponent>(font, color);
+	
 	go = std::make_shared<GameObject>();
+	auto FPSComp = make_shared<FPSComponent>(font, color);
+	
 	go->SetPosition(0, 0);
 	go->AddComponent(FPSComp);
 	scene.Add(go);
 
+	// Title
 	color = SDL_Color{ 255, 0, 0 };
 	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto txtComp = make_shared<TextComponent>("Programming 4 Assignment", font, color);
+	
 	go = std::make_shared<GameObject>();
+	auto txtComp = make_shared<TextComponent>("Programming 4 Assignment", font, color);
+	
 	go->SetPosition(80, 20);
 	go->AddComponent(txtComp);
 	scene.Add(go);
+
+	// Player (not rendered, just conceptual)
+	go = std::make_shared<GameObject>();
+	auto inputComp = make_shared<InputComponent>(go, true);
+
+	go->SetPosition(0, 0);
+	go->AddComponent(inputComp);
+	scene.Add(go);
+
+	InputManager& inputManager = InputManager::GetInstance();
+	inputManager.AddCommand("FireCommand", new FireCommand);
+	inputManager.AddCommand("JumpCommand", new JumpCommand);
+	inputManager.AddCommand("DuckCommand", new DuckCommand);
+	inputManager.AddCommand("FartCommand", new FartCommand);
+	inputManager.AddCommand("NothingCommand", new ColorCommand);
+
+	inputManager.BindButtonInput(VK_PAD_A, "JumpCommand");
 }
 
 void Himinn::Minigin::Cleanup()

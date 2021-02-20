@@ -13,7 +13,7 @@ namespace Himinn {
 		virtual void FixedUpdate() override;
 		virtual void Update() override;
 		virtual void LateUpdate() override;
-		virtual void Render(const Transform& transform) override;
+		virtual void Render(const Transform&) override;
 
 		void SetTexture(const string& filename);
 

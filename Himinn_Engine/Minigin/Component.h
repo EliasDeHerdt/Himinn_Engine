@@ -4,7 +4,6 @@
 using namespace std;
 namespace Himinn {
 	
-	class GameObject;
 	class Component
 	{
 	public:
@@ -18,7 +17,7 @@ namespace Himinn {
 		virtual void FixedUpdate() = 0;
 		virtual void Update() = 0;
 		virtual void LateUpdate() = 0;
-		virtual void Render(const Transform& transform) = 0;
+		virtual void Render(const Transform&) = 0;
 	protected:
 		bool m_NeedsUpdate = false;
 	};
