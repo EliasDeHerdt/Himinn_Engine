@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "Component.h"
-#include "TextComponent.h"
 
 using namespace std;
 namespace Himinn
@@ -28,7 +27,17 @@ namespace Himinn
 		void SetPosition(float x, float y);
 		const Transform& GetTransform() const;
 
-		bool AddComponent(shared_ptr<Component> component);
+		template<typename T>
+		bool AddComponent(weak_ptr<T> component)
+		{
+			if (component.expired()
+				|| component.use_count() != 1
+				|| !GetComponent<T>().expired())
+				return false;
+			
+			m_Components.push_back(component.lock());
+			return true;
+		}
 		template<typename T>
 		weak_ptr<T> GetComponent() const {
 			weak_ptr<T> weak;
@@ -43,7 +52,6 @@ namespace Himinn
 			return weak;
 		}
 	private:
-		bool m_ShouldRender = true;
 		Transform m_Transform;
 		vector<shared_ptr<Component>> m_Components{};
 	};

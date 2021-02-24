@@ -10,6 +10,9 @@
 #include "GameObject.h"
 #include "Scene.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "Time.h"
 #include "TextComponent.h"
 #include "ImageComponent.h"
@@ -52,17 +55,17 @@ void Himinn::Minigin::LoadGame() const
 	// Image Components
 	// Background
 	auto go = std::make_shared<GameObject>();
-	auto imgComp = make_shared<ImageComponent>("background.jpg");
+	auto imgComp = make_shared<ImageComponent>(go, "background.jpg");
 	
-	go->AddComponent(imgComp);
+	go->AddComponent<ImageComponent>(imgComp);
 	scene.Add(go);
 
 	// Logo
 	go = std::make_shared<GameObject>();
-	imgComp = make_shared<ImageComponent>("logo.png");
+	imgComp = make_shared<ImageComponent>(go, "logo.png");
 
 	go->SetPosition(216, 180);
-	go->AddComponent(imgComp);
+	go->AddComponent<ImageComponent>(imgComp);
 	scene.Add(go);
 
 	// Text Components
@@ -71,10 +74,10 @@ void Himinn::Minigin::LoadGame() const
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 	
 	go = std::make_shared<GameObject>();
-	auto FPSComp = make_shared<FPSComponent>(font, color);
+	auto FPSComp = make_shared<FPSComponent>(go, font, color);
 	
 	go->SetPosition(0, 0);
-	go->AddComponent(FPSComp);
+	go->AddComponent<FPSComponent>(FPSComp);
 	scene.Add(go);
 
 	// Title
@@ -82,10 +85,10 @@ void Himinn::Minigin::LoadGame() const
 	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	
 	go = std::make_shared<GameObject>();
-	auto txtComp = make_shared<TextComponent>("Programming 4 Assignment", font, color);
+	auto txtComp = make_shared<TextComponent>(go, "Programming 4 Assignment", font, color);
 	
 	go->SetPosition(80, 20);
-	go->AddComponent(txtComp);
+	go->AddComponent<TextComponent>(txtComp);
 	scene.Add(go);
 
 	// Player (not rendered, just conceptual)
@@ -93,7 +96,7 @@ void Himinn::Minigin::LoadGame() const
 	auto inputComp = make_shared<InputComponent>(go, true);
 
 	go->SetPosition(0, 0);
-	go->AddComponent(inputComp);
+	go->AddComponent<InputComponent>(inputComp);
 	scene.Add(go);
 
 	InputManager& inputManager = InputManager::GetInstance();

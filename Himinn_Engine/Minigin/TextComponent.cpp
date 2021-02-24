@@ -3,16 +3,20 @@
 
 #include <SDL_ttf.h>
 #include "RenderComponent.h"
+#include "GameObject.h"
 #include "Texture2D.h"
 #include "Renderer.h"
 #include "Font.h"
 
-Himinn::TextComponent::TextComponent(const string& text, const shared_ptr<Font>& font, const SDL_Color& color)
-	: m_Text(text)
+Himinn::TextComponent::TextComponent(const std::weak_ptr<GameObject>& owner, const string& text, const shared_ptr<Font>& font, const SDL_Color& color)
+	: Component(owner)
+	, m_Text(text)
 	, m_Font(font)
 	, m_Color{color}
-	, m_RenderComponent{}
 {
+	if (!owner.lock()->AddComponent<RenderComponent>(make_shared<RenderComponent>(owner)))
+		std::cout << "ImageComponent: A RenderComponent was already present, so no new one was added\n";
+	m_RenderComponent = owner.lock()->GetComponent<RenderComponent>();
 	if (!text.empty())
 		m_NeedsUpdate = true;
 }
@@ -39,7 +43,7 @@ void Himinn::TextComponent::Update()
 		SDL_FreeSurface(surf);
 
 		//Push texture to RenderComponent
-		m_RenderComponent.SetTexture(make_shared<Texture2D>(texture));
+		m_RenderComponent.lock()->SetTexture(make_shared<Texture2D>(texture));
 
 		//Disable the need to update
 		m_NeedsUpdate = false;
@@ -50,9 +54,8 @@ void Himinn::TextComponent::LateUpdate()
 {
 }
 
-void Himinn::TextComponent::Render(const Transform& transform)
+void Himinn::TextComponent::Render()
 {
-	m_RenderComponent.Render(transform);
 }
 
 // This implementation uses the "dirty flag" pattern

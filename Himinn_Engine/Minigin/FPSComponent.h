@@ -10,16 +10,18 @@ namespace Himinn {
 		public Component
 	{
 	public:
-		FPSComponent(const shared_ptr<Font>& font, const SDL_Color& color);
+		FPSComponent(const std::weak_ptr<GameObject>& owner, const shared_ptr<Font>& font, const SDL_Color& color);
 
 		virtual void FixedUpdate() override;
 		virtual void Update() override;
 		virtual void LateUpdate() override;
-		virtual void Render(const Transform&) override;
+		virtual void Render() override;
 
 	private:
-		TextComponent m_TextComponent;
 		int m_AccumulatedFrames = 0;
 		double m_TimePassed = 0.0;
+
+		// Components
+		std::weak_ptr<TextComponent> m_TextComponent;
 	};
 }

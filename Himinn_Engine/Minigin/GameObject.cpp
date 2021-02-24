@@ -5,17 +5,6 @@
 
 Himinn::GameObject::~GameObject() = default;
 
-bool Himinn::GameObject::AddComponent(shared_ptr<Component> component)
-{
-	for (shared_ptr<Component> comp : m_Components) {
-
-		if (typeid(*comp) == typeid(*component))
-			return false;
-	}
-	m_Components.push_back(component);
-	return true;
-}
-
 void Himinn::GameObject::FixedUpdate()
 {
 	for (shared_ptr<Component> comp : m_Components)
@@ -36,11 +25,8 @@ void Himinn::GameObject::LateUpdate()
 
 void Himinn::GameObject::Render() const
 {
-	if (m_ShouldRender) {
-
-		for (shared_ptr<Component> comp : m_Components)
-			comp->Render(m_Transform);
-	}
+	for (shared_ptr<Component> comp : m_Components)
+		comp->Render();
 }
 
 void Himinn::GameObject::SetPosition(float x, float y)

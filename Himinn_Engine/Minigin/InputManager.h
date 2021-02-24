@@ -38,7 +38,6 @@ namespace Himinn
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
-		~InputManager();
 		bool ProcessInput();
 		void HandleInput(const GameObject& gameObject, bool controller);
 		bool IsPressed(int keyCode) const;

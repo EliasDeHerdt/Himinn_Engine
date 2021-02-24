@@ -3,8 +3,8 @@
 
 #include "InputManager.h"
 
-Himinn::InputComponent::InputComponent(weak_ptr<GameObject> owner, bool useController)
-	: m_Owner{owner}
+Himinn::InputComponent::InputComponent(const std::weak_ptr<GameObject>& owner, bool useController)
+	: Component(owner)
 	, m_UseController{useController}
 {
 }
@@ -22,6 +22,6 @@ void Himinn::InputComponent::LateUpdate()
 {
 }
 
-void Himinn::InputComponent::Render(const Transform&)
+void Himinn::InputComponent::Render()
 {
 }

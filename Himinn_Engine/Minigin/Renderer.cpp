@@ -4,26 +4,58 @@
 #include "SceneManager.h"
 #include "Texture2D.h"
 
+#include "imgui.h"
+#include "imgui_impl_opengl2.h"
+#include "imgui_impl_sdl.h"
+
 void Himinn::Renderer::Init(SDL_Window * window)
 {
-	m_Renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	m_Window = window;
+	
+	m_Renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (m_Renderer == nullptr) 
 	{
 		throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 	}
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplSDL2_InitForOpenGL(window, SDL_GL_GetCurrentContext());
+	ImGui_ImplOpenGL2_Init();
+	ImGui::GetStyle().WindowRounding = 5.0f;
 }
 
-void Himinn::Renderer::Render() const
+void Himinn::Renderer::Render()
 {
 	SDL_RenderClear(m_Renderer);
 
 	SceneManager::GetInstance().Render();
+
+	ImGui_ImplOpenGL2_NewFrame();
+	ImGui_ImplSDL2_NewFrame(m_Window);
+
+	ImVec2 buttonSize = { 120, 20 };
+	ImGui::NewFrame(); // creates new debug window
+	ImGui::Begin("Select Mode", &m_ShowHud/*, ImGuiWindowFlags_MenuBar*/);
+	ImGui::Button("Single player", buttonSize);
+	ImGui::Button("Co-op", buttonSize);
+	ImGui::Button("Versus", buttonSize);
+	ImGui::End();
+	//if (m_ShowHud)
+	//	ImGui::ShowDemoWindow(&m_ShowHud);
+	
+	ImGui::Render();
+	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 	
 	SDL_RenderPresent(m_Renderer);
 }
 
 void Himinn::Renderer::Destroy()
 {
+	ImGui_ImplOpenGL2_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+	
 	if (m_Renderer != nullptr)
 	{
 		SDL_DestroyRenderer(m_Renderer);
@@ -48,4 +80,19 @@ void Himinn::Renderer::RenderTexture(const Texture2D& texture, const float x, co
 	dst.w = static_cast<int>(width);
 	dst.h = static_cast<int>(height);
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+}
+
+// Function made with information found on forum
+int Himinn::Renderer::GetOpenGLDriverIndex()
+{
+	auto openglIndex = -1;
+	const auto driverCount = SDL_GetNumRenderDrivers();
+	for (auto i = 0; i < driverCount; i++)
+	{
+		SDL_RendererInfo info;
+		if (!SDL_GetRenderDriverInfo(i, &info))
+			if (!strcmp(info.name, "opengl"))
+				openglIndex = i;
+	}
+	return openglIndex;
 }

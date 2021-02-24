@@ -8,16 +8,17 @@ namespace Himinn {
 	class ImageComponent : public Component
 	{
 	public:
-		ImageComponent(const string& filename);
+		ImageComponent(const std::weak_ptr<GameObject>& owner, const string& filename);
 
 		virtual void FixedUpdate() override;
 		virtual void Update() override;
 		virtual void LateUpdate() override;
-		virtual void Render(const Transform&) override;
+		virtual void Render() override;
 
-		void SetTexture(const string& filename);
+		void SetTexture(const string& filename) const;
 
 	private:
-		RenderComponent m_RenderComponent;
+		// Components
+		std::weak_ptr<RenderComponent> m_RenderComponent;
 	};
 }

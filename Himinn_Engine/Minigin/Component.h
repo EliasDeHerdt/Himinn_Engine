@@ -3,11 +3,14 @@
 
 using namespace std;
 namespace Himinn {
-	
+
+	class GameObject;
 	class Component
 	{
 	public:
-		Component() {};
+		Component(const std::weak_ptr<GameObject>& owner)
+			: m_Owner{ owner }
+		{};
 		virtual ~Component() = default;
 		Component(const Component& other) = delete;
 		Component& operator=(const Component& other) = delete;
@@ -17,8 +20,9 @@ namespace Himinn {
 		virtual void FixedUpdate() = 0;
 		virtual void Update() = 0;
 		virtual void LateUpdate() = 0;
-		virtual void Render(const Transform&) = 0;
+		virtual void Render() = 0;
 	protected:
 		bool m_NeedsUpdate = false;
+		weak_ptr<GameObject> m_Owner;
 	};
 }

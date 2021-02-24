@@ -14,8 +14,6 @@ class ColorCommand final : public Command
 public:
 	virtual ~ColorCommand() override = default;
 	virtual void Execute(const GameObject&) override {};
-private:
-	SDL_Color m_Color = {0, 0, 0};
 };
 
 class FireCommand final : public Command
