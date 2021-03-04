@@ -1,23 +1,21 @@
 #include "MiniginPCH.h"
 #include "InputManager.h"
-#include "GameObject.h"
 #include <SDL.h>
 
 bool Himinn::InputManager::ProcessInput()
 {
-	ZeroMemory(&m_Stroke, sizeof(XINPUT_KEYSTROKE));
-	const int controllerInputCheck = XInputGetKeystroke(0, 0, &m_Stroke);
-
-	if (m_InputMade)
-		ResetInputs();
-	
-	if (controllerInputCheck == 0)
+	//ZeroMemory(&m_Stroke, sizeof(XINPUT_KEYSTROKE));
+	for (int i = 0; i < m_AmountOfPlayers; ++i)
 	{
-		for (auto& input : m_Inputs)
+		if (XInputGetKeystroke(i, 0, &m_Stroke) == 0)
 		{
-			input.second.trigger = (m_Stroke.VirtualKey == input.first && (m_Stroke.Flags == input.second.GetInputMode()));
-			if (!m_InputMade)
-				m_InputMade = input.second.trigger;
+			for (auto& input : m_Inputs)
+			{
+				if (i == (int)input.first.playerId 
+					&& m_Stroke.VirtualKey == input.first.key 
+					&& m_Stroke.Flags == input.second.GetInputMode())
+					input.second.command.lock()->Execute();
+			}
 		}
 	}
 	
@@ -37,24 +35,10 @@ bool Himinn::InputManager::ProcessInput()
 	return true;
 }
 
-void Himinn::InputManager::HandleInput(const GameObject& gameObject, bool controller)
-{
-	if (controller)
-	{
-		for (const auto& input : m_Inputs)
-			if (IsPressed(input.first))
-				input.second.command.lock()->Execute(gameObject);
-	}
-	else
-	{
-		
-	}
-}
-
-bool Himinn::InputManager::IsPressed(int keyCode) const
-{
-	return m_Inputs.at(keyCode).trigger;
-}
+//bool Himinn::InputManager::IsPressed(int keyCode) const
+//{
+//	return m_Inputs.at(keyCode).trigger;
+//}
 
 // Add or override a command
 // todo: potential leak on swapping command under tag (shouldn't happen in practice, but shouldn't cause problems either)
@@ -66,14 +50,15 @@ void Himinn::InputManager::AddCommand(std::string tag, Command* command)
 	m_Commands.emplace(tag, command);
 }
 
-void Himinn::InputManager::BindButtonInput(int keyCode, std::string commandTag, InputMode mode)
+void Himinn::InputManager::BindButtonInput(unsigned player, unsigned keyCode, std::string commandTag, InputMode mode)
 {
-	m_Inputs.emplace(keyCode, InputInfo{ m_Commands.at((commandTag)), mode });
+	m_Inputs.emplace(ButtonInfo{ player, keyCode }, InputInfo{ m_Commands.at((commandTag)), mode });
 }
 
-void Himinn::InputManager::ResetInputs()
+void Himinn::InputManager::SetAmountOfPlayers(int amountOfPlayers)
 {
-	m_InputMade = false;
-	for (auto& input : m_Inputs)
-		input.second.trigger = false;
+	if (amountOfPlayers > 0)
+		m_AmountOfPlayers = amountOfPlayers;
+	else
+		m_AmountOfPlayers = 1;
 }

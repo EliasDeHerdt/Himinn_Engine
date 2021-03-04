@@ -1,7 +1,7 @@
 #include "MiniginPCH.h"
 #include "FPSComponent.h"
 
-
+#include "TextComponent.h"
 #include "GameObject.h"
 #include "Time.h"
 

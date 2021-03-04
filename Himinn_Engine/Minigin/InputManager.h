@@ -12,6 +12,23 @@ namespace Himinn
 		pressed
 	};
 
+	struct ButtonInfo
+	{
+		unsigned playerId;
+		unsigned key;
+	};
+
+	inline bool operator< (const ButtonInfo& lhs, const ButtonInfo& rhs)
+	{
+		if (lhs.playerId < rhs.playerId)
+			return true;
+		if (lhs.playerId > rhs.playerId)
+			return false;
+		if (lhs.key < rhs.key)
+			return true;
+		return false;
+	}
+
 	struct InputInfo
 	{
 		// Returns the InputMode, but converted to the correct flag
@@ -29,9 +46,8 @@ namespace Himinn
 			return 0;
 		}
 
-		weak_ptr<Command> command;
+		std::weak_ptr<Command> command;
 		InputMode mode = InputMode::down;
-		bool trigger = false;
 	};
 
 	//todo: put 2 - 4 inputmaps in an array, allow the manager to ask which player should be checked for processInput (0, 1, 2 or3)
@@ -39,17 +55,18 @@ namespace Himinn
 	{
 	public:
 		bool ProcessInput();
-		void HandleInput(const GameObject& gameObject, bool controller);
-		bool IsPressed(int keyCode) const;
+		//bool IsPressed(int keyCode) const;
 
 		void AddCommand(std::string tag, Command* command);
 		
-		void BindButtonInput(int keyCode, std::string commandTag, InputMode mode = InputMode::down);
+		void BindButtonInput(unsigned player, unsigned keyCode, std::string commandTag, InputMode mode = InputMode::down);
+		void SetAmountOfPlayers(int amountOfPlayers);
 	private:
 		bool m_InputMade = false;
+		int m_AmountOfPlayers = 1;
 		XINPUT_KEYSTROKE m_Stroke{};
-		std::map<int, InputInfo> m_Inputs = {};
-		std::map<std::string, shared_ptr<Command>> m_Commands= {};
+		std::map<ButtonInfo, InputInfo> m_Inputs = {};
+		std::map<std::string, std::shared_ptr<Command>> m_Commands= {};
 
 		void ResetInputs();
 	};

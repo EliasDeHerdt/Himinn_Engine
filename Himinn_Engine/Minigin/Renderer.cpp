@@ -40,7 +40,24 @@ void Himinn::Renderer::Render()
 	ImGui::Button("Single player", buttonSize);
 	ImGui::Button("Co-op", buttonSize);
 	ImGui::Button("Versus", buttonSize);
+	if (ImGui::Button("How To Play", buttonSize))
+		m_ShowTutorial = !m_ShowTutorial;
 	ImGui::End();
+
+	if (m_ShowTutorial)
+	{
+		ImGui::Begin("How To Play", &m_ShowHud);
+		ImGui::Text("Currently, both players are controlled by 1 controller.");
+		ImGui::Text("Although, multiple players are supported! (I own 1 controller)");
+		ImGui::Text("A: Player 1 gains 25 points");
+		ImGui::Text("B: Player 1 dies");
+		ImGui::Text("X: Player 1 gains 500 points");
+		ImGui::Text("D-Pad Down: Player 2 gains 25 points");
+		ImGui::Text("D-Pad Right: Player 2 dies");
+		ImGui::Text("D-Pad Left: Player 2 gains 500 points");
+		ImGui::End();
+	}
+	
 	//if (m_ShowHud)
 	//	ImGui::ShowDemoWindow(&m_ShowHud);
 	

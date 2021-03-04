@@ -1,45 +1,47 @@
 #pragma once
-#include "GameObject.h"
 
-using namespace Himinn;
-class Command
+namespace Himinn
 {
-public:
-	virtual ~Command() = default;
-	virtual void Execute(const GameObject&) = 0;
-};
+	class GameObject;
+	class PlayerComponent;
+	enum class ScoreGain;
+	
+	class Command
+	{
+	public:
+		Command(std::weak_ptr<GameObject> gameObject) : m_GameObject(gameObject) {};
+		virtual ~Command() = default;
+		virtual void Execute() = 0;
+	private:
+		std::weak_ptr<GameObject> m_GameObject;
+	};
 
-class ColorCommand final : public Command
-{
-public:
-	virtual ~ColorCommand() override = default;
-	virtual void Execute(const GameObject&) override {};
-};
+	class JumpCommand final : public Command
+	{
+	public:
+		JumpCommand(std::weak_ptr<GameObject> gameObject);
+		~JumpCommand() override = default;
+		void Execute() override;
+	};
 
-class FireCommand final : public Command
-{
-public:
-	virtual ~FireCommand() override = default;
-	virtual void Execute(const GameObject&) override;
-};
+	class ObjectDiesCommand final : public Command
+	{
+	public:
+		ObjectDiesCommand(std::weak_ptr<GameObject> gameObject);
+		~ObjectDiesCommand() override = default;
+		void Execute() override;
+	private:
+		std::weak_ptr<PlayerComponent> m_pPlayerComponent = {};
+	};
 
-class DuckCommand final : public Command
-{
-public:
-	virtual ~DuckCommand() override = default;
-	virtual void Execute(const GameObject&) override;
-};
-
-class JumpCommand final : public Command
-{
-public:
-	virtual ~JumpCommand() override = default;
-	virtual void Execute(const GameObject&) override;
-};
-
-class FartCommand final : public Command
-{
-public:
-	virtual ~FartCommand() override = default;
-	virtual void Execute(const GameObject&) override;
-};
+	class GainScoreCommand final : public Command
+	{
+	public:
+		GainScoreCommand(std::weak_ptr<GameObject> gameObject, ScoreGain scoreGain);
+		~GainScoreCommand() override = default;
+		void Execute() override;
+	private:
+		std::weak_ptr<PlayerComponent> m_pPlayerComponent = {};
+		ScoreGain m_ScoreGain;
+	};
+}

@@ -17,7 +17,12 @@
 #include "TextComponent.h"
 #include "ImageComponent.h"
 #include "FPSComponent.h"
-#include "InputComponent.h"
+#include "LivesComponent.h"
+#include "ScoreComponent.h"
+#include "PlayerComponent.h"
+#include "SubjectComponent.h"
+
+#include "PlayerObserver.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -51,33 +56,29 @@ void Himinn::Minigin::Initialize()
 void Himinn::Minigin::LoadGame() const
 {
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
-
-	// Image Components
+	int lives = 3;
+	SDL_Color color = SDL_Color{ 0, 255, 0 };
+	shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
+	
+	// Observers
+	std::shared_ptr<PlayerObserver> pPlayerOneObserver{make_shared<PlayerObserver>()};
+	std::shared_ptr<PlayerObserver> pPlayerTwoObserver{make_shared<PlayerObserver>()};
+	
 	// Background
 	auto go = std::make_shared<GameObject>();
-	auto imgComp = make_shared<ImageComponent>(go, "background.jpg");
-	
-	go->AddComponent<ImageComponent>(imgComp);
+	go->AddComponent<ImageComponent>(make_shared<ImageComponent>(go, "background.jpg"));
 	scene.Add(go);
 
 	// Logo
 	go = std::make_shared<GameObject>();
-	imgComp = make_shared<ImageComponent>(go, "logo.png");
-
+	go->AddComponent<ImageComponent>(make_shared<ImageComponent>(go, "logo.png"));
 	go->SetPosition(216, 180);
-	go->AddComponent<ImageComponent>(imgComp);
 	scene.Add(go);
 
-	// Text Components
 	// FPS
-	auto color = SDL_Color{ 0, 255, 0 };
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	
 	go = std::make_shared<GameObject>();
-	auto FPSComp = make_shared<FPSComponent>(go, font, color);
-	
+	go->AddComponent<FPSComponent>(make_shared<FPSComponent>(go, font, color));
 	go->SetPosition(0, 0);
-	go->AddComponent<FPSComponent>(FPSComp);
 	scene.Add(go);
 
 	// Title
@@ -85,28 +86,89 @@ void Himinn::Minigin::LoadGame() const
 	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	
 	go = std::make_shared<GameObject>();
-	auto txtComp = make_shared<TextComponent>(go, "Programming 4 Assignment", font, color);
-	
+	go->AddComponent<TextComponent>(make_shared<TextComponent>(go, "Programming 4 Assignment", font, color));
 	go->SetPosition(80, 20);
-	go->AddComponent<TextComponent>(txtComp);
 	scene.Add(go);
 
-	// Player (not rendered, just conceptual)
+	// Player 1
+	// Lives Component
+	color = SDL_Color{ 255, 125, 0 };
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
+	
 	go = std::make_shared<GameObject>();
-	auto inputComp = make_shared<InputComponent>(go, true);
-
-	go->SetPosition(0, 0);
-	go->AddComponent<InputComponent>(inputComp);
+	go->AddComponent<LivesComponent>(make_shared<LivesComponent>(go, lives, font, color));
+	go->SetPosition(10, 390);
 	scene.Add(go);
 
-	InputManager& inputManager = InputManager::GetInstance();
-	inputManager.AddCommand("FireCommand", new FireCommand);
-	inputManager.AddCommand("JumpCommand", new JumpCommand);
-	inputManager.AddCommand("DuckCommand", new DuckCommand);
-	inputManager.AddCommand("FartCommand", new FartCommand);
-	inputManager.AddCommand("NothingCommand", new ColorCommand);
+	pPlayerOneObserver->SetLivesComponent(go->GetComponent<LivesComponent>());
 
-	inputManager.BindButtonInput(VK_PAD_A, "JumpCommand");
+	// Score Component
+	go = std::make_shared<GameObject>();
+	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
+	go->SetPosition(10, 410);
+	scene.Add(go);
+
+	pPlayerOneObserver->SetScoreComponent(go->GetComponent<ScoreComponent>());
+
+	// Player Component
+	auto player1 = std::make_shared<GameObject>();
+	player1->AddComponent<SubjectComponent>(make_shared<SubjectComponent>(player1));
+	player1->GetComponent<SubjectComponent>().lock()->AddObserver(pPlayerOneObserver);
+	player1->AddComponent<PlayerComponent>(make_shared<PlayerComponent>(player1, lives));
+	player1->AddComponent<ImageComponent>(make_shared<ImageComponent>(player1, "QBert.png"));
+	player1->SetPosition(150, 390);
+	scene.Add(player1);
+	
+	// Player 2
+	// Lives Component
+	color = SDL_Color{ 255, 0, 255 };
+
+	go = std::make_shared<GameObject>();
+	go->AddComponent<LivesComponent>(make_shared<LivesComponent>(go, lives, font, color));
+	go->SetPosition(10, 430);
+	scene.Add(go);
+
+	pPlayerTwoObserver->SetLivesComponent(go->GetComponent<LivesComponent>());
+
+	// Score Component
+	go = std::make_shared<GameObject>();
+	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
+	go->SetPosition(10, 450);
+	scene.Add(go);
+
+	pPlayerTwoObserver->SetScoreComponent(go->GetComponent<ScoreComponent>());
+	
+	// Player Component
+	auto player2 = std::make_shared<GameObject>();
+	player2->AddComponent<SubjectComponent>(make_shared<SubjectComponent>(player2));
+	player2->GetComponent<SubjectComponent>().lock()->AddObserver(pPlayerTwoObserver);
+	player2->AddComponent<PlayerComponent>(make_shared<PlayerComponent>(player2, lives));
+	player2->AddComponent<ImageComponent>(make_shared<ImageComponent>(player2, "Coily.png"));
+	player2->SetPosition(160, 430);
+	scene.Add(player2);
+
+	// Input
+	InputManager& inputManager = InputManager::GetInstance();
+	
+	// Player 1 Commands
+	inputManager.AddCommand("PlayerOneDies", new ObjectDiesCommand(player1));
+	inputManager.AddCommand("PlayerOneJumpPlatform", new GainScoreCommand(player1, ScoreGain::ColorChange));
+	inputManager.AddCommand("PlayerOneKillCoily", new GainScoreCommand(player1, ScoreGain::DefeatCoily));
+
+	// Player 2 Commands
+	inputManager.AddCommand("PlayerTwoDies", new ObjectDiesCommand(player2));
+	inputManager.AddCommand("PlayerTwoJumpPlatform", new GainScoreCommand(player2, ScoreGain::ColorChange));
+	inputManager.AddCommand("PlayerTwoKillCoily", new GainScoreCommand(player2, ScoreGain::DefeatCoily));
+	
+	// Binds
+	inputManager.BindButtonInput(0, VK_PAD_A, "PlayerOneJumpPlatform");
+	inputManager.BindButtonInput(0, VK_PAD_X, "PlayerOneKillCoily");
+	inputManager.BindButtonInput(0, VK_PAD_B, "PlayerOneDies");
+
+	// For now, player 2 is also on controller 1, but 2nd controller works
+	inputManager.BindButtonInput(0, VK_PAD_DPAD_DOWN, "PlayerTwoJumpPlatform");
+	inputManager.BindButtonInput(0, VK_PAD_DPAD_LEFT, "PlayerTwoKillCoily");
+	inputManager.BindButtonInput(0, VK_PAD_DPAD_RIGHT, "PlayerTwoDies");
 }
 
 void Himinn::Minigin::Cleanup()

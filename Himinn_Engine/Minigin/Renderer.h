@@ -26,6 +26,7 @@ namespace Himinn
 		SDL_Renderer* m_Renderer{};
 		SDL_Window* m_Window = nullptr;
 		bool m_ShowHud = true;
+		bool m_ShowTutorial = false;
 	};
 }
 
