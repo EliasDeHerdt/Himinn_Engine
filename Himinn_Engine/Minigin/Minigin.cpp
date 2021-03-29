@@ -2,6 +2,7 @@
 #include "Minigin.h"
 #include <chrono>
 #include <thread>
+#include <vld.h>
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
@@ -12,8 +13,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
 #include "Time.h"
+#include "audio.h"
 #include "TextComponent.h"
 #include "ImageComponent.h"
 #include "FPSComponent.h"
@@ -23,17 +24,32 @@
 #include "SubjectComponent.h"
 
 #include "PlayerObserver.h"
+#include "AudioLibrary.h"
+#include "SoundServiceLocator.h"
+#include "SoundLogger.h"
+#include "SDLSoundSytem.h"
+
 
 using namespace std;
 using namespace std::chrono;
 
 void Himinn::Minigin::Initialize()
 {
+	// Enables usage off Simple_SDL audio
+	_putenv("SDL_AUDIODRIVER=DirectSound");
+	
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
+	if (SDL_Init(SDL_INIT_AUDIO) != 0)
+	{
+		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
+	}
 
+	//Initializes simple audio
+	initAudio();
+	
 	m_Window = SDL_CreateWindow(
 		"Programming 4 assignment",
 		SDL_WINDOWPOS_UNDEFINED,
@@ -169,11 +185,22 @@ void Himinn::Minigin::LoadGame() const
 	inputManager.BindButtonInput(0, VK_PAD_DPAD_DOWN, "PlayerTwoJumpPlatform");
 	inputManager.BindButtonInput(0, VK_PAD_DPAD_LEFT, "PlayerTwoKillCoily");
 	inputManager.BindButtonInput(0, VK_PAD_DPAD_RIGHT, "PlayerTwoDies");
+
+	// SoundService
+	SoundServiceLocator::RegisterSoundSystem(new SoundLogger(new SDLSoundSytem()));
+	//SoundServiceLocator::RegisterSoundSystem(new SoundLogger(new SDLSoundSytem(), true));
+
+	SoundServiceLocator::GetSoundSystem()->SetVolume(80);
+	
+	// Audio
+	AudioLibrary::GetInstance().AddAudioFile("../QBert/Resources/qbert/door1.wav");
+	AudioLibrary::GetInstance().AddAudioFile("../QBert/Resources/qbert/door2.wav");
 }
 
 void Himinn::Minigin::Cleanup()
 {
 	Renderer::GetInstance().Destroy();
+	delete SoundServiceLocator::GetSoundSystem();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	SDL_Quit();

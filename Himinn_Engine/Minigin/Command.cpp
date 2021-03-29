@@ -4,6 +4,7 @@
 
 #include "GameObject.h"
 #include "PlayerComponent.h"
+#include "SoundServiceLocator.h"
 
 Himinn::JumpCommand::JumpCommand(weak_ptr<GameObject> gameObject)
 	: Command(gameObject)
@@ -27,7 +28,8 @@ void Himinn::ObjectDiesCommand::Execute()
 {
 	if (m_pPlayerComponent.expired())
 		return;
-	
+
+	SoundServiceLocator::GetSoundSystem()->QueueSound(0, 100);
 	m_pPlayerComponent.lock()->LoseLife();
 }
 
@@ -44,6 +46,7 @@ void Himinn::GainScoreCommand::Execute()
 {
 	if (m_pPlayerComponent.expired())
 		return;
-	
+
+	SoundServiceLocator::GetSoundSystem()->QueueSound(1, 100);
 	m_pPlayerComponent.lock()->GainScore(m_ScoreGain);
 }

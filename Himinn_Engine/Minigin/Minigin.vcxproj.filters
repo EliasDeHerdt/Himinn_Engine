@@ -43,6 +43,21 @@
     <Filter Include="Observer">
       <UniqueIdentifier>{80c9471f-b44a-47b0-8d36-7dbc7a259ab2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServiceLocator">
+      <UniqueIdentifier>{bd4c66bb-b01c-415d-8b8e-394282773b2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoundSystem">
+      <UniqueIdentifier>{0676a688-18fb-4e09-8871-b3d9161cb516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SimpleSDLAudio">
+      <UniqueIdentifier>{650c1d46-b6c8-4ab4-b522-5235f273dab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Singletons\AudioLibrary">
+      <UniqueIdentifier>{218d68ed-ce41-43a5-8f20-fac00d0f448f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoundSystem\Decorators">
+      <UniqueIdentifier>{d20e2b3b-0361-43e7-8d7b-53cdbe1c6bb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MiniginPCH.h">
@@ -147,6 +162,24 @@
     <ClInclude Include="ScoreComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="SoundServiceLocator.h">
+      <Filter>ServiceLocator</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLSoundSytem.h">
+      <Filter>SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLibrary.h">
+      <Filter>Singletons\AudioLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\Simple_SDL2_Audio\audio.h">
+      <Filter>SimpleSDLAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundLogger.h">
+      <Filter>SoundSystem\Decorators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
@@ -238,6 +271,21 @@
     </ClCompile>
     <ClCompile Include="ScoreComponent.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLSoundSytem.cpp">
+      <Filter>SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioLibrary.cpp">
+      <Filter>Singletons\AudioLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\Simple_SDL2_Audio\audio.c">
+      <Filter>SimpleSDLAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundServiceLocator.cpp">
+      <Filter>ServiceLocator</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundLogger.cpp">
+      <Filter>SoundSystem\Decorators</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

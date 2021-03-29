@@ -50,7 +50,6 @@ namespace Himinn
 		InputMode mode = InputMode::down;
 	};
 
-	//todo: put 2 - 4 inputmaps in an array, allow the manager to ask which player should be checked for processInput (0, 1, 2 or3)
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
