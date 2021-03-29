@@ -38,11 +38,11 @@ namespace Himinn
 		bool m_Muted = false;
 		float m_Volume = 100.f;
 		
-		mutex m_Mutex = {};
-		condition_variable cv = {};
-		queue<SoundInfo> m_SoundQueue = {};
-
 		bool m_KeepThreadAlive = true;
 		thread m_AudioThread;
+		
+		mutex m_Mutex = {};
+		condition_variable m_Condition = {};
+		queue<SoundInfo> m_SoundQueue = {};
 	};
 }

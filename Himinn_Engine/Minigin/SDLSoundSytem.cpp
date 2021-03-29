@@ -12,7 +12,7 @@ Himinn::SDLSoundSytem::SDLSoundSytem()
 Himinn::SDLSoundSytem::~SDLSoundSytem()
 {
 	m_KeepThreadAlive = false;
-	cv.notify_one();
+	m_Condition.notify_one();
 	m_AudioThread.join();
 }
 
@@ -22,7 +22,7 @@ void Himinn::SDLSoundSytem::ThreadUpdate()
 	{
 		// Wait for te list to be filled
 		unique_lock<mutex> lock(m_Mutex);
-		cv.wait(lock, [this] { return (!m_SoundQueue.empty() || !m_KeepThreadAlive); });
+		m_Condition.wait(lock, [this] { return (!m_SoundQueue.empty() || !m_KeepThreadAlive); });
 
 		// We now own the lock
 		if (!m_SoundQueue.empty())
@@ -57,13 +57,13 @@ void Himinn::SDLSoundSytem::SetVolume(float volume)
 void Himinn::SDLSoundSytem::QueueSound(const unsigned char id, const float volume)
 {
 	m_SoundQueue.push(SoundInfo{ true, id, volume });
-	cv.notify_one();
+	m_Condition.notify_one();
 }
 
 void Himinn::SDLSoundSytem::QueueMusic(const unsigned char id, const float volume)
 {
 	m_SoundQueue.push(SoundInfo{ false, id, volume });
-	cv.notify_one();
+	m_Condition.notify_one();
 }
 
 void Himinn::SDLSoundSytem::Play(bool AsSoundEffect, const unsigned char id, const float volume)
