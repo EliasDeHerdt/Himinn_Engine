@@ -27,7 +27,7 @@ void Himinn::SDLSoundSytem::ThreadUpdate()
 		// We now own the lock
 		if (!m_SoundQueue.empty())
 		{
-			SoundInfo& currentSound = m_SoundQueue.back();
+			SoundInfo& currentSound = m_SoundQueue.front();
 			Play(currentSound.IsSoundEffect, currentSound.id, currentSound.volume);
 			m_SoundQueue.pop();
 		}
