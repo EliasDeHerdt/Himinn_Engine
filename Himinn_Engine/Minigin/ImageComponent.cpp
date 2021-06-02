@@ -36,3 +36,8 @@ void Himinn::ImageComponent::SetTexture(const string& filename) const
 {
 	m_RenderComponent.lock()->SetTexture(ResourceManager::GetInstance().LoadTexture(filename));
 }
+
+Himinn::IVector2 Himinn::ImageComponent::GetTextureDimensions() const
+{
+	return m_RenderComponent.lock()->GetTextureDimensions();
+}

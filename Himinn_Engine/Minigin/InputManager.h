@@ -1,11 +1,13 @@
 #pragma once
 #include <XInput.h>
 #include <map>
+#include <string>
+#include <memory>
 #include "Singleton.h"
-#include "Command.h"
 
 namespace Himinn
 {
+	class Command;
 	enum class InputMode {
 		down,
 		up,
@@ -67,7 +69,7 @@ namespace Himinn
 		std::map<ButtonInfo, InputInfo> m_Inputs = {};
 		std::map<std::string, std::shared_ptr<Command>> m_Commands= {};
 
-		void ResetInputs();
+		//void ResetInputs();
 	};
 
 }

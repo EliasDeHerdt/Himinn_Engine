@@ -3,7 +3,7 @@
 
 #include "TextComponent.h"
 #include "GameObject.h"
-#include "Time.h"
+#include "GameTime.h"
 
 Himinn::FPSComponent::FPSComponent(const std::weak_ptr<GameObject>& owner, const shared_ptr<Font>& font, const SDL_Color& color)
 	: Component(owner)
@@ -20,7 +20,7 @@ void Himinn::FPSComponent::FixedUpdate()
 void Himinn::FPSComponent::Update()
 {
 	++m_AccumulatedFrames;
-	m_TimePassed += Time::GetInstance().GetDeltaTime();
+	m_TimePassed += GameTime::GetInstance().GetDeltaTime();
 	if (m_TimePassed >= 1.0) {
 
 		//Show FPS on screen

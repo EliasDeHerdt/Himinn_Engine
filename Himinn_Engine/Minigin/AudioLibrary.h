@@ -1,16 +1,16 @@
 #pragma once
 #include "Singleton.h"
-#include "SDL_audio.h"
+#include <string>
+#include <vector>
 
-using namespace std;
 namespace Himinn
 {
 	class AudioLibrary : public Himinn::Singleton<AudioLibrary>
 	{
 	public:
-		const string& GetSound(unsigned char id);
-		void AddAudioFile(string filepath);
+		const std::string& GetSound(unsigned char id);
+		void AddAudioFile(std::string filepath);
 	private:
-		vector<string> m_Sounds;
+		std::vector<std::string> m_Sounds;
 	};
 }

@@ -1,8 +1,8 @@
 #pragma once
 #include "Component.h"
 #include "RenderComponent.h"
+#include "DataTypes.h"
 
-using namespace std;
 namespace Himinn {
 
 	class ImageComponent : public Component
@@ -15,7 +15,8 @@ namespace Himinn {
 		virtual void LateUpdate() override;
 		virtual void Render() override;
 
-		void SetTexture(const string& filename) const;
+		void SetTexture(const std::string& filename) const;
+		IVector2 GetTextureDimensions() const;
 
 	private:
 		// Components

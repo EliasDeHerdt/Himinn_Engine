@@ -1,7 +1,9 @@
 #include <Minigin.h>
 
+#include "Game.h"
+
 int main(int, char* []) {
-	Himinn::Minigin engine;
+	Game engine;
 	engine.Run();
 	return 0;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
+#include "DataTypes.h"
 
-using namespace std;
 namespace Himinn {
 
 	class Texture2D;
@@ -15,10 +15,11 @@ namespace Himinn {
 			virtual void LateUpdate() override;
 			virtual void Render() override;
 
-			virtual void SetTexture(const shared_ptr<Texture2D>& texture);
-
+			virtual void SetTexture(const std::shared_ptr<Texture2D>& texture);
+			IVector2 GetTextureDimensions() const;
+	
 		private:
-			shared_ptr<Texture2D> m_Texture;
+			std::shared_ptr<Texture2D> m_Texture;
 	};
 }
 

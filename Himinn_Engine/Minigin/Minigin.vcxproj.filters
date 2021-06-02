@@ -87,7 +87,7 @@
     <ClInclude Include="Component.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="Time.h">
+    <ClInclude Include="GameTime.h">
       <Filter>Singletons\Time</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
@@ -180,6 +180,9 @@
     <ClInclude Include="SoundLogger.h">
       <Filter>SoundSystem\Decorators</Filter>
     </ClInclude>
+    <ClInclude Include="DataTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
@@ -206,7 +209,7 @@
     <ClCompile Include="Minigin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Time.cpp">
+    <ClCompile Include="GameTime.cpp">
       <Filter>Singletons\Time</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">

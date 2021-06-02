@@ -1,5 +1,6 @@
 #include "MiniginPCH.h"
 #include "InputManager.h"
+#include "Command.h"
 #include <SDL.h>
 
 bool Himinn::InputManager::ProcessInput()

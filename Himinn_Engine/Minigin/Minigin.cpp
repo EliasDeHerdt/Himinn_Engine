@@ -13,7 +13,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include "Time.h"
+#include "GameTime.h"
 #include "audio.h"
 #include "TextComponent.h"
 #include "ImageComponent.h"
@@ -28,7 +28,7 @@
 #include "SoundServiceLocator.h"
 #include "SoundLogger.h"
 #include "SDLSoundSytem.h"
-
+#include "Command.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -228,7 +228,7 @@ void Himinn::Minigin::Run()
 			//Calculate and set DeltaTime
 			const auto currentTime = high_resolution_clock::now();
 			float dt = duration<float>(currentTime - lastTime).count();
-			Himinn::Time::GetInstance().SetDeltaTime(dt);
+			Himinn::GameTime::GetInstance().SetDeltaTime(dt);
 			
 			//Make last time the current time (while loop will keep going)
 			//Add difference in time to last check to lag
@@ -236,7 +236,7 @@ void Himinn::Minigin::Run()
 			lag += dt;
 
 			//If we may continue, start updating frames
-			//If lag is higher than allowed delay per update, keep doing updates untill we've cought up
+			//If lag is higher than allowed delay per update, keep doing updates until we've caught up
 			//This update will be the FixedUpdate a.k.a. the physics updates
 			doContinue = input.ProcessInput();
 			while (lag >= MsPerUpdate)
@@ -245,7 +245,7 @@ void Himinn::Minigin::Run()
 				lag -= MsPerUpdate;
 			}
 			//Do the normal Update and following this the LateUpdate
-			//The LateUpdate will handle everything that can only happen correctly afther the normal Update
+			//The LateUpdate will handle everything that can only happen correctly after the normal Update
 			sceneManager.Update();
 			sceneManager.LateUpdate();
 
