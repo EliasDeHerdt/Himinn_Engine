@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
+#include "DataTypes.h"
 
 Himinn::GameObject::~GameObject() = default;
 
@@ -32,6 +33,11 @@ void Himinn::GameObject::Render() const
 void Himinn::GameObject::SetPosition(float x, float y)
 {
 	m_Transform.SetPosition(x, y, 0.0f);
+}
+
+void Himinn::GameObject::SetPosition(IVector2 position)
+{
+	m_Transform.SetPosition((float)position.x, (float)position.y, 0.0f);
 }
 
 const Himinn::Transform& Himinn::GameObject::GetTransform() const

@@ -168,13 +168,9 @@ void Himinn::Minigin::LoadGame() const
 	
 	// Player 1 Commands
 	inputManager.AddCommand("PlayerOneDies", new ObjectDiesCommand(player1));
-	inputManager.AddCommand("PlayerOneJumpPlatform", new GainScoreCommand(player1, ScoreGain::ColorChange));
-	inputManager.AddCommand("PlayerOneKillCoily", new GainScoreCommand(player1, ScoreGain::DefeatCoily));
 
 	// Player 2 Commands
 	inputManager.AddCommand("PlayerTwoDies", new ObjectDiesCommand(player2));
-	inputManager.AddCommand("PlayerTwoJumpPlatform", new GainScoreCommand(player2, ScoreGain::ColorChange));
-	inputManager.AddCommand("PlayerTwoKillCoily", new GainScoreCommand(player2, ScoreGain::DefeatCoily));
 	
 	// Binds
 	inputManager.BindButtonInput(0, VK_PAD_A, "PlayerOneJumpPlatform");

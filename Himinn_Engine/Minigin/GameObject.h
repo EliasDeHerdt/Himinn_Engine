@@ -8,6 +8,7 @@
 using namespace std;
 namespace Himinn
 {
+	struct IVector2;
 	class Texture2D;
 	class GameObject final : public SceneObject
 	{
@@ -25,6 +26,7 @@ namespace Himinn
 		void Render() const override;
 
 		void SetPosition(float x, float y);
+		void SetPosition(IVector2 position);
 		const Transform& GetTransform() const;
 
 		template<typename T>

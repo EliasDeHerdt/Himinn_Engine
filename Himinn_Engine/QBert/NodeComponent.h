@@ -25,8 +25,8 @@ public:
 	virtual void LateUpdate() override;
 	virtual void Render() override;
 
-	const Himinn::IVector2& GetPlayerXOffset() const;
-	void SetPlayerXOffset(Himinn::IVector2 position);
+	const Himinn::IVector2& GetPlayerOffset() const;
+	void SetPlayerOffset(Himinn::IVector2 position);
 
 	void IncrementNodeLevel();
 	void SetNodeLevel(unsigned int level);

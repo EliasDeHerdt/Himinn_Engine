@@ -3,14 +3,6 @@
 
 namespace Himinn
 {
-	enum class ScoreGain
-	{
-		ColorChange = 25,
-		DiscRemaining = 50,
-		Catch = 300,
-		DefeatCoily = 500
-	};
-	
 	class SubjectComponent;
 	class PlayerComponent : public Component
 	{
@@ -26,16 +18,7 @@ namespace Himinn
 		virtual void Update() override;
 		virtual void LateUpdate() override;
 		virtual void Render() override;
-
-		int GetLives() const;
-		int GetScore() const;
-
-		void LoseLife();
-		void SetLives(int lives);
-		void GainScore(ScoreGain score);
 	private:
-		int m_Lives;
-		int m_Score;
 
 		// Components
 		std::weak_ptr<SubjectComponent> m_pSubjectComponent = {};

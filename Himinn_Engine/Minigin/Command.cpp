@@ -30,7 +30,6 @@ void Himinn::ObjectDiesCommand::Execute()
 		return;
 
 	SoundServiceLocator::GetSoundSystem()->QueueSound(0, 100);
-	m_pPlayerComponent.lock()->LoseLife();
 }
 
 Himinn::GainScoreCommand::GainScoreCommand(std::weak_ptr<GameObject> gameObject, ScoreGain scoreGain)
@@ -47,6 +46,5 @@ void Himinn::GainScoreCommand::Execute()
 	if (m_pPlayerComponent.expired())
 		return;
 
-	SoundServiceLocator::GetSoundSystem()->QueueSound(1, 100);
-	m_pPlayerComponent.lock()->GainScore(m_ScoreGain);
+	SoundServiceLocator::GetSoundSystem()->QueueSound(0, 100);
 }

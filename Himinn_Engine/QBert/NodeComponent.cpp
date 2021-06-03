@@ -41,12 +41,12 @@ void NodeComponent::Render()
 {
 }
 
-const Himinn::IVector2& NodeComponent::GetPlayerXOffset() const
+const Himinn::IVector2& NodeComponent::GetPlayerOffset() const
 {
 	return m_PlayerOffset;
 }
 
-void NodeComponent::SetPlayerXOffset(Himinn::IVector2 position)
+void NodeComponent::SetPlayerOffset(Himinn::IVector2 position)
 {
 	m_PlayerOffset = position;
 }

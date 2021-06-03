@@ -1,0 +1,2 @@
+- Implement movement where player holds his layer + number.
+	-> Set discs outside of the grid (numbers will be -1 of layer + 2)
