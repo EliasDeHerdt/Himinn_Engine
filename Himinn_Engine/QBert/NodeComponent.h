@@ -44,7 +44,7 @@ private:
 	std::weak_ptr<NodeComponent> m_pBottomRightNeighbor;
 	
 	// Components
-	std::weak_ptr<Himinn::ImageComponent> m_pImageComponent = {};
+	std::weak_ptr<Himinn::ImageComponent> m_pImageComponent;
 
 	void SetTexture();
 };

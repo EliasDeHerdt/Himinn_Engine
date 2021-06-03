@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Observer.h"
 #include "GameObject.h"
+#include "GameTime.h"
 #include "SubjectComponent.h"
 #include "GridComponent.h"
 
@@ -11,6 +12,9 @@ CharacterComponent::CharacterComponent(const std::weak_ptr<Himinn::GameObject>& 
 	, m_Lives(lives)
 	, m_Score()
 	, m_GridPosition()
+	, m_CanMove(true)
+	, m_MovementTimer()
+	, m_MovementDelay(0.3f)
 	, m_pSubjectComponent()
 	, m_pGridComponent(grid)
 {
@@ -27,6 +31,33 @@ CharacterComponent::CharacterComponent(const std::weak_ptr<Himinn::GameObject>& 
 	m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
 }
 
+void CharacterComponent::FixedUpdate()
+{
+}
+
+void CharacterComponent::Update()
+{
+	if (!m_CanMove)
+	{
+		float dt = Himinn::GameTime::GetInstance().GetDeltaTime();
+		
+		m_MovementTimer += dt;
+		if (m_MovementTimer >= m_MovementDelay)
+		{
+			m_CanMove = true;
+			m_MovementTimer = 0.f;
+		}
+	}
+}
+
+void CharacterComponent::LateUpdate()
+{
+}
+
+void CharacterComponent::Render()
+{
+}
+
 int CharacterComponent::GetLives() const
 {
 	return m_Lives;
@@ -35,6 +66,30 @@ int CharacterComponent::GetLives() const
 int CharacterComponent::GetScore() const
 {
 	return m_Score;
+}
+
+void CharacterComponent::Move(Himinn::QBertDirection direction)
+{
+	if (!m_CanMove)
+		return;
+
+	m_CanMove = false;
+	Himinn::IVector2 position{ GetGridPosition() };
+	
+	switch (direction) {
+		case Himinn::QBertDirection::TopLeft:
+			SetGridPosition(position.x - 1, position.y - 1);
+			break;
+		case Himinn::QBertDirection::TopRight:
+			SetGridPosition(position.x - 1, position.y);
+			break;
+		case Himinn::QBertDirection::BottomLeft:
+			SetGridPosition(position.x + 1, position.y);
+			break;
+		case Himinn::QBertDirection::BottomRight:
+			SetGridPosition(position.x + 1, position.y + 1);
+		default: break;
+	}
 }
 
 // Lose 1 life
@@ -78,36 +133,28 @@ void CharacterComponent::SetGridPosition(int layer, int number)
 
 void CharacterComponent::SetGridPosition(Himinn::IVector2 position)
 {
+	bool update{ true };
 	m_GridPosition = position;
 	Himinn::IVector2 nodeCharacterPosition = m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y);
+
 	if (nodeCharacterPosition.x == -1
 		|| nodeCharacterPosition.y == -1)
 	{
-		// LoseLife sets m_GridPosition to 0,0
-		LoseLife();
-		m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
+		// LoseLife sets m_GridPosition to {0, 0}, but it still needs to be set.
+		// This is because, if the life check succeeds, the player goes up WITHOUT losing a life.
+		if (!m_pGridComponent.lock()->CheckForLift(m_GridPosition.x, m_GridPosition.y))
+			LoseLife();
+		
+		update = false;
+		m_GridPosition = { 0, 0 };
 	}
-	else
-		m_Owner.lock()->SetPosition(nodeCharacterPosition);
+	
+	m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
+	if (update)
+		m_pGridComponent.lock()->UpgradeNode(m_GridPosition.x, m_GridPosition.y);
 }
 
 Himinn::IVector2 CharacterComponent::GetGridPosition() const
 {
 	return m_GridPosition;
-}
-
-void CharacterComponent::FixedUpdate()
-{
-}
-
-void CharacterComponent::Update()
-{
-}
-
-void CharacterComponent::LateUpdate()
-{
-}
-
-void CharacterComponent::Render()
-{
 }

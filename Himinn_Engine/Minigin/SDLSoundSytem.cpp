@@ -21,7 +21,7 @@ void Himinn::SDLSoundSytem::ThreadUpdate()
 	while (m_KeepThreadAlive)
 	{
 		// Wait for te list to be filled
-		unique_lock<mutex> lock(m_Mutex);
+		std::unique_lock<std::mutex> lock(m_Mutex);
 		m_Condition.wait(lock, [this] { return (!m_SoundQueue.empty() || !m_KeepThreadAlive); });
 
 		// We now own the lock

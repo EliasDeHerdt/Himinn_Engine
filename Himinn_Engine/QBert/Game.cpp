@@ -35,6 +35,9 @@ void Game::LoadGame() const
 	SDL_Color color = SDL_Color{ 0, 255, 0 };
 	std::shared_ptr<Himinn::Font> font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 
+	// Observers
+	std::shared_ptr<Himinn::PlayerObserver> pPlayerOneObserver{ make_shared<Himinn::PlayerObserver>() };
+	
 	// Background
 	auto go = std::make_shared<Himinn::GameObject>();
 	go->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(go, "background.jpg"));
@@ -59,17 +62,23 @@ void Game::LoadGame() const
 
 	go = std::make_shared<Himinn::GameObject>();
 	go->AddComponent<Himinn::LivesComponent>(make_shared<Himinn::LivesComponent>(go, lives, font, color));
-	go->SetPosition(10, 390);
+	go->SetPosition(10, 20);
 	scene.Add(go);
 
+	pPlayerOneObserver->SetLivesComponent(go->GetComponent<Himinn::LivesComponent>());
+	
 	// Score Component
 	go = std::make_shared<Himinn::GameObject>();
 	go->AddComponent<Himinn::ScoreComponent>(make_shared<Himinn::ScoreComponent>(go, font, color));
-	go->SetPosition(10, 410);
+	go->SetPosition(10, 40);
 	scene.Add(go);
-
+	
+	pPlayerOneObserver->SetScoreComponent(go->GetComponent<Himinn::ScoreComponent>());
+	
 	// Player Component
 	auto player1 = std::make_shared<Himinn::GameObject>();
+	player1->AddComponent<Himinn::SubjectComponent>(make_shared<Himinn::SubjectComponent>(player1));
+	player1->GetComponent<Himinn::SubjectComponent>().lock()->AddObserver(pPlayerOneObserver);
 	player1->AddComponent<CharacterComponent>(make_shared<CharacterComponent>(player1, gridComp, lives));
 	player1->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(player1, "QBert/Characters/Character_QBert.png"));
 	scene.Add(player1);

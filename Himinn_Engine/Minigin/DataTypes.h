@@ -5,6 +5,11 @@ namespace Himinn
 	struct IVector2
 	{
 		int x, y;
+
+		bool operator!=(const IVector2& rhs) const
+		{
+			return (x != rhs.x || y != rhs.y);
+		}
 	};
 
 	enum class QBertDirection
@@ -14,4 +19,6 @@ namespace Himinn
 		BottomLeft,
 		BottomRight
 	};
+
+	
 }

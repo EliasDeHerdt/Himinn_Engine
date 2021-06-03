@@ -22,21 +22,5 @@ void MoveCommand::Execute()
 		return;
 	}
 
-	Himinn::IVector2 position{ m_CharacterComp.lock()->GetGridPosition() };
-	switch (m_Direction)
-	{
-	case Himinn::QBertDirection::TopLeft:
-		m_CharacterComp.lock()->SetGridPosition(position.x - 1, position.y - 1);
-		break;
-	case Himinn::QBertDirection::TopRight:
-		m_CharacterComp.lock()->SetGridPosition(position.x - 1, position.y);
-		break;
-	case Himinn::QBertDirection::BottomLeft:
-		m_CharacterComp.lock()->SetGridPosition(position.x + 1, position.y);
-		break;
-	case Himinn::QBertDirection::BottomRight:
-		m_CharacterComp.lock()->SetGridPosition(position.x + 1, position.y + 1);
-		break;
-	default: ;
-	}
+	m_CharacterComp.lock()->Move(m_Direction);
 }

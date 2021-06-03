@@ -10,6 +10,7 @@ NodeComponent::NodeComponent(const std::weak_ptr<Himinn::GameObject>& owner, con
 	, m_PlayerOffset(playerOffset)
 	, m_NodeLevel(0)
 	, m_TexturePaths(textures)
+	, m_pImageComponent()
 {
 	std::string path{};
 	if (!textures.empty())
@@ -53,14 +54,21 @@ void NodeComponent::SetPlayerOffset(Himinn::IVector2 position)
 
 void NodeComponent::IncrementNodeLevel()
 {
-	if (m_NodeLevel + 1 > m_TexturePaths.size() - 1)
+	if (m_CycleLevels)
 	{
-		if (m_CycleLevels)
-			m_NodeLevel = 0;
-		else
+		if (m_NodeLevel + 1 < m_TexturePaths.size())
 			++m_NodeLevel;
-
+		else
+			--m_NodeLevel;
 		SetTexture();
+	}
+	else
+	{
+		if (m_NodeLevel + 1 < m_TexturePaths.size())
+		{
+			++m_NodeLevel;
+			SetTexture();
+		}
 	}
 }
 

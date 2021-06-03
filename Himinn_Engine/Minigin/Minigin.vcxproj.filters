@@ -99,9 +99,6 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>Singletons\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="SceneObject.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Objects</Filter>
     </ClInclude>

@@ -36,6 +36,8 @@ public:
 	int GetLives() const;
 	int GetScore() const;
 
+	void Move(Himinn::QBertDirection direction);
+
 	void LoseLife();
 	void SetLives(int lives);
 	void GainScore(ScoreGain score);
@@ -46,6 +48,11 @@ private:
 	int m_Lives;
 	int m_Score;
 	Himinn::IVector2 m_GridPosition;
+
+	// Movement
+	bool m_CanMove;
+	float m_MovementTimer;
+	float m_MovementDelay;
 
 	// Components
 	std::weak_ptr<Himinn::SubjectComponent> m_pSubjectComponent;

@@ -30,6 +30,16 @@ void Himinn::GameObject::Render() const
 		comp->Render();
 }
 
+void Himinn::GameObject::MarkForDestruction()
+{
+	m_Destroy = true;
+}
+
+bool Himinn::GameObject::ShouldBeDestroyed() const
+{
+	return m_Destroy;
+}
+
 void Himinn::GameObject::SetPosition(float x, float y)
 {
 	m_Transform.SetPosition(x, y, 0.0f);

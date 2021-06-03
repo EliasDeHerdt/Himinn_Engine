@@ -26,8 +26,11 @@ public:
 	virtual void Render() override;
 
 	void ReadGridSettingsFile(const std::string& filePath);
-	Himinn::IVector2 GetNodeCharacterPosition(int layer, int number) const;
+	void UpgradeNode(int layer, int number);
+	
+	Himinn::IVector2 GetNodeCharacterPosition(int layer, int number);
 	std::weak_ptr<Himinn::GameObject> GetNode(int layer, int number) const;
+	bool CheckForLift(int layer, int number);
 
 private:
 	// Node settings
@@ -40,6 +43,7 @@ private:
 	// Lift settings
 	Himinn::IVector2 m_NodeLiftLayers;
 	std::string m_NodeLiftTexture;
+	std::vector<std::shared_ptr<Himinn::GameObject>> m_pLifts;
 	
 	// Grid
 	Himinn::Scene& m_Scene;

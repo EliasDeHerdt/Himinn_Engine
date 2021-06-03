@@ -4,7 +4,6 @@
 #include <mutex>
 #include <thread>
 
-using namespace std;
 namespace Himinn
 {
 	class SDLSoundSytem final : public ISoundSystem
@@ -39,10 +38,10 @@ namespace Himinn
 		float m_Volume = 100.f;
 		
 		bool m_KeepThreadAlive = true;
-		thread m_AudioThread;
-		
-		mutex m_Mutex = {};
-		condition_variable m_Condition = {};
-		queue<SoundInfo> m_SoundQueue = {};
+		std::thread m_AudioThread;
+
+		std::mutex m_Mutex = {};
+		std::condition_variable m_Condition = {};
+		std::queue<SoundInfo> m_SoundQueue = {};
 	};
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include "Transform.h"
-#include "SceneObject.h"
 #include <vector>
 
 #include "Component.h"
@@ -10,7 +9,7 @@ namespace Himinn
 {
 	struct IVector2;
 	class Texture2D;
-	class GameObject final : public SceneObject
+	class GameObject final
 	{
 	public:
 		GameObject() = default;
@@ -20,10 +19,13 @@ namespace Himinn
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 		
-		void FixedUpdate() override;
-		void Update() override;
-		void LateUpdate() override;
-		void Render() const override;
+		void FixedUpdate();
+		void Update();
+		void LateUpdate();
+		void Render() const;
+
+		void MarkForDestruction();
+		bool ShouldBeDestroyed() const;
 
 		void SetPosition(float x, float y);
 		void SetPosition(IVector2 position);
@@ -54,6 +56,8 @@ namespace Himinn
 			return weak;
 		}
 	private:
+		bool m_Destroy;
+		
 		Transform m_Transform;
 		vector<shared_ptr<Component>> m_Components{};
 	};

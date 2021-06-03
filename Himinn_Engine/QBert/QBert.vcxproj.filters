@@ -42,6 +42,9 @@
     <ClCompile Include="Commands.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="LiftComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="Commands.h">
       <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="LiftComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

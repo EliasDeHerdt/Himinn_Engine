@@ -10,7 +10,7 @@ Scene::Scene(const std::string& name) : m_Name(name) {}
 
 Scene::~Scene() = default;
 
-void Scene::Add(const std::shared_ptr<SceneObject>& object)
+void Scene::Add(const std::shared_ptr<GameObject>& object)
 {
 	m_Objects.push_back(object);
 }
@@ -36,6 +36,14 @@ void Himinn::Scene::LateUpdate()
 	for (auto& object : m_Objects)
 	{
 		object->LateUpdate();
+	}
+
+	// Clean-Up
+	for (auto& object : m_Objects)
+	{
+		if (object
+			&& object->ShouldBeDestroyed())
+			m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), object), m_Objects.end());
 	}
 }
 
