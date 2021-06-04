@@ -1,12 +1,9 @@
 #pragma once
 #include "Component.h"
+#include "Observer.h"
 
 namespace Himinn
 {
-	struct EventInfo;
-	enum class ObserverEvent;
-	
-	class Observer;
 	class SubjectComponent : public Component
 	{
 	public:
@@ -22,7 +19,17 @@ namespace Himinn
 		virtual void LateUpdate() override;
 		virtual void Render() override;
 
-		void Notify(EventInfo eventInfo, ObserverEvent observerEvent) const;
+		void Notify(EventInfo eventInfo, unsigned int observerEvent) const;
+
+		template<typename T>
+		void NotifySpecific(EventInfo eventInfo, unsigned int observerEvent) const
+		{
+			for (shared_ptr<Observer> comp : m_Observers)
+				if (std::dynamic_pointer_cast<T>(comp) != nullptr) {
+					comp->OnNotify(eventInfo, observerEvent);
+					return;
+				}
+		}
 
 		bool AddObserver(const std::shared_ptr<Observer>& observer);
 		bool RemoveObserver(const std::shared_ptr<Observer>& observer);

@@ -9,7 +9,7 @@
 //TB = TextureBlock
 //TL = LiftTexture
 //------------------
-NC=TRUE
+NC=FALSE
 SL=0
 LA=7
 SP=288;100
@@ -18,5 +18,4 @@ NO=0;-16
 LL=2;3
 TB=QBert/LevelAssets/Floor_Level_1.png
 TB=QBert/LevelAssets/Floor_Level_2.png
-TB=QBert/LevelAssets/Floor_Level_3.png
 TL=QBert/LevelAssets/Floor_Elevator.png

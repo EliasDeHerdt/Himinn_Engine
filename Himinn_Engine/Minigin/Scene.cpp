@@ -55,3 +55,8 @@ void Scene::Render() const
 	}
 }
 
+const std::string& Himinn::Scene::GetName() const
+{
+	return m_Name;
+}
+

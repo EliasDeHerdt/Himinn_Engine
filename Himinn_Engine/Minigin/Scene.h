@@ -15,6 +15,8 @@ namespace Himinn
 		void LateUpdate();
 		void Render() const;
 
+		const std::string& GetName() const;
+
 		~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
@@ -25,7 +27,7 @@ namespace Himinn
 		explicit Scene(const std::string& name);
 
 		std::string m_Name;
-		std::vector < std::shared_ptr<GameObject>> m_Objects{};
+		std::vector<std::shared_ptr<GameObject>> m_Objects{};
 
 		static unsigned int m_IdCounter; 
 	};

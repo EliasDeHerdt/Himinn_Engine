@@ -6,7 +6,7 @@ namespace Himinn
 	{
 	public:
 		void Initialize();
-		virtual void LoadGame() const;
+		virtual void LoadGame();
 		virtual void Cleanup();
 		void Run();
 	private:

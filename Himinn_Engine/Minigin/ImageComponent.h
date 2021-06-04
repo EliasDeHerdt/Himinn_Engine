@@ -2,13 +2,14 @@
 #include "Component.h"
 #include "RenderComponent.h"
 #include "DataTypes.h"
+#include <string>
 
 namespace Himinn {
 
 	class ImageComponent : public Component
 	{
 	public:
-		ImageComponent(const std::weak_ptr<GameObject>& owner, const string& filename);
+		ImageComponent(const std::weak_ptr<GameObject>& owner, const std::string& filename);
 
 		virtual void FixedUpdate() override;
 		virtual void Update() override;

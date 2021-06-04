@@ -4,9 +4,11 @@
 #include <regex>
 #include "Scene.h"
 #include "GameObject.h"
+#include "NodeObserver.h"
 #include "ImageComponent.h"
 #include "LiftComponent.h"
 #include "NodeComponent.h"
+#include "SubjectComponent.h"
 
 GridComponent::GridComponent(const std::weak_ptr<Himinn::GameObject>& owner, Himinn::Scene& scene, const std::string& filePath)
 	: Component(owner)
@@ -20,8 +22,11 @@ GridComponent::GridComponent(const std::weak_ptr<Himinn::GameObject>& owner, Him
 	, m_pLifts()
 	, m_Scene(scene)
 	, m_NodeOffset()
+	, m_NodesCompleted()
+	, m_pNodeObserver(std::make_shared<NodeObserver>())
 	, m_pGameObjects()
 {
+	m_pNodeObserver->SetGridComponent(m_Owner.lock()->GetComponent<GridComponent>());
 	ReadGridSettingsFile(filePath);
 	GenerateGrid();
 }
@@ -119,6 +124,31 @@ void GridComponent::UpgradeNode(int layer, int number)
 	GetNode(layer, number).lock()->GetComponent<NodeComponent>().lock()->IncrementNodeLevel();
 }
 
+void GridComponent::UpdateNodeCompletion(bool nodeReady)
+{
+	if (nodeReady)
+	{
+		++m_NodesCompleted;
+		CheckLevelFinished();
+	}
+	else
+		--m_NodesCompleted;
+}
+
+void GridComponent::CheckLevelFinished()
+{
+}
+
+Himinn::IVector2 GridComponent::GetLeftPeakPosition()
+{
+	return {(int)m_NodeLayerAmount - 1, 0 };
+}
+
+Himinn::IVector2 GridComponent::GetRightPeakPosition()
+{
+	return { (int)m_NodeLayerAmount - 1, (int)m_NodeLayerAmount - 1 };
+}
+
 Himinn::IVector2 GridComponent::GetNodeCharacterPosition(int layer, int number) 
 {
 	int index{ GetListIndex(layer, number) };
@@ -149,8 +179,14 @@ void GridComponent::GenerateGrid()
 		for (unsigned int j = 0; j < (i + 1); ++j)
 		{
 			auto gameObject{ std::make_shared <Himinn::GameObject>() };
-			auto gridComp{ std::make_shared<NodeComponent>(gameObject, m_NodeTexturePaths, m_NodePlayerOffset, m_NodeStartLevel, m_NodeCanCycle) };
-			gameObject->AddComponent<NodeComponent>(gridComp);
+			
+			auto subjectComp{ std::make_shared<Himinn::SubjectComponent>(gameObject) };
+			subjectComp->AddObserver(m_pNodeObserver);
+			gameObject->AddComponent<Himinn::SubjectComponent>(subjectComp);
+
+			auto nodeComp{ std::make_shared<NodeComponent>(gameObject, m_NodeTexturePaths, m_NodePlayerOffset, m_NodeStartLevel, m_NodeCanCycle) };
+			gameObject->AddComponent<NodeComponent>(nodeComp);
+
 
 			Himinn::IVector2 imgDim = gameObject->GetComponent<Himinn::ImageComponent>().lock()->GetTextureDimensions();
 			gameObject->SetPosition(GridStartPos.x + ((float)m_NodeOffset.x + imgDim.x) * j - (imgDim.x / 2) * i, GridStartPos.y + ((float)m_NodeOffset.y + imgDim.y) * i);
@@ -217,7 +253,7 @@ bool GridComponent::CheckForLift(int layer, int number)
 			|| liftComp.lock()->GetGridPosition() != Himinn::IVector2{layer, number})
 			continue;
 
-		lift->MarkForDestruction();
+		liftComp.lock()->Activate();
 		m_pLifts.erase(std::remove(m_pLifts.begin(), m_pLifts.end(), lift));
 		return true;
 	}

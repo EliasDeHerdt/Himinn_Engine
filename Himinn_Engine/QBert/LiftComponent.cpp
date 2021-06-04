@@ -3,6 +3,7 @@
 #include <iostream>
 #include "GameObject.h"
 #include "ImageComponent.h"
+#include "SoundServiceLocator.h"
 
 LiftComponent::LiftComponent(const weak_ptr<Himinn::GameObject>& owner, const std::string& texture, Himinn::IVector2 gridPosition, Himinn::IVector2 playerOffset)
 	: Component(owner)
@@ -49,4 +50,6 @@ void LiftComponent::SetPlayerOffset(Himinn::IVector2 offset)
 
 void LiftComponent::Activate()
 {
+	Himinn::SoundServiceLocator::GetSoundSystem()->QueueSound(0, 100);
+	m_Owner.lock()->MarkForDestruction();
 }

@@ -5,14 +5,14 @@
 #include "LivesComponent.h"
 #include "ScoreComponent.h"
 
-void Himinn::PlayerObserver::OnNotify(EventInfo eventInfo, ObserverEvent event)
+void Himinn::PlayerObserver::OnNotify(EventInfo eventInfo, unsigned int event)
 {
 	switch (event)
 	{
-	case ObserverEvent::PlayerDied:
+	case 0:
 		m_pLivesText.lock()->SetCurrentLives(eventInfo.intInfo);
 		break;
-	case ObserverEvent::PlayerScore:
+	case 1:
 		m_pScoreText.lock()->SetCurrentScore(eventInfo.intInfo);
 		break;
 	default: break;

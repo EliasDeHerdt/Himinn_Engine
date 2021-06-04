@@ -22,6 +22,12 @@
     <Filter Include="Commands">
       <UniqueIdentifier>{44b2a487-fa33-4f12-b6eb-5e0a30660e4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{0a7ed76a-8090-403d-893d-1686a4ae78f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Observers">
+      <UniqueIdentifier>{0664ff85-9cb7-4fae-aa5e-8cc20a79d664}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QBert.cpp">
@@ -45,6 +51,18 @@
     <ClCompile Include="LiftComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeObserver.cpp">
+      <Filter>Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -64,6 +82,18 @@
     </ClInclude>
     <ClInclude Include="LiftComponent.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeObserver.h">
+      <Filter>Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

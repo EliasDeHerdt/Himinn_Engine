@@ -6,29 +6,24 @@
 #include "GameTime.h"
 #include "SubjectComponent.h"
 #include "GridComponent.h"
+#include "PlayerObserver.h"
 
 CharacterComponent::CharacterComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid, int lives)
 	: Component(owner)
 	, m_Lives(lives)
 	, m_Score()
 	, m_GridPosition()
+	, m_GridSpawnPosition()
 	, m_CanMove(true)
 	, m_MovementTimer()
 	, m_MovementDelay(0.3f)
 	, m_pSubjectComponent()
 	, m_pGridComponent(grid)
 {
-	if (!owner.lock()->AddComponent<Himinn::SubjectComponent>(make_shared<Himinn::SubjectComponent>(owner)))
-		std::cout << "PlayerComponent: A SubjectComponent was already present, so no new one was added.\n";
-	m_pSubjectComponent = owner.lock()->GetComponent<Himinn::SubjectComponent>();
-
 	if (m_pGridComponent.expired())
-	{
 		std::cout << "PlayerComponent: The given grid does not exist.\n";
-		return;
-	}
-	
-	m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
+	else
+		m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
 }
 
 void CharacterComponent::FixedUpdate()
@@ -45,7 +40,7 @@ void CharacterComponent::Update()
 		if (m_MovementTimer >= m_MovementDelay)
 		{
 			m_CanMove = true;
-			m_MovementTimer = 0.f;
+			m_MovementTimer -= m_MovementDelay;
 		}
 	}
 }
@@ -56,6 +51,13 @@ void CharacterComponent::LateUpdate()
 
 void CharacterComponent::Render()
 {
+}
+
+void CharacterComponent::OnAddedToObject()
+{
+	m_pSubjectComponent = m_Owner.lock()->GetComponent<Himinn::SubjectComponent>();
+	if (m_pSubjectComponent.expired())
+		std::cout << "PlayerComponent: No SubjectComponent was present, no observations will be made.\n";
 }
 
 int CharacterComponent::GetLives() const
@@ -90,6 +92,13 @@ void CharacterComponent::Move(Himinn::QBertDirection direction)
 			SetGridPosition(position.x + 1, position.y + 1);
 		default: break;
 	}
+
+	m_pGridComponent.lock()->UpgradeNode(m_GridPosition.x, m_GridPosition.y);
+}
+
+void CharacterComponent::MoveToSpawn()
+{
+	SetGridPosition(m_GridSpawnPosition);
 }
 
 // Lose 1 life
@@ -99,7 +108,7 @@ void CharacterComponent::LoseLife()
 	if (m_Lives - 1 >= 0)
 	{
 		--m_Lives;
-		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, Himinn::ObserverEvent::PlayerDied);
+		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerDied);
 	}
 }
 
@@ -110,12 +119,12 @@ void CharacterComponent::SetLives(int lives)
 	if (lives >= 0)
 	{
 		m_Lives = lives;
-		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, Himinn::ObserverEvent::PlayerDied);
+		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerDied);
 	}
 	else if (m_Lives != 0)
 	{
 		m_Lives = 0;
-		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, Himinn::ObserverEvent::PlayerDied);
+		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerDied);
 	}
 }
 
@@ -123,7 +132,12 @@ void CharacterComponent::GainScore(ScoreGain scoreGain)
 {
 	int score = (int)scoreGain;
 	m_Score += score;
-	m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Score, 0.f, "" }, Himinn::ObserverEvent::PlayerScore);
+	m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Score, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerScore);
+}
+
+void CharacterComponent::SetGrid(const std::weak_ptr<GridComponent>& grid)
+{
+	m_pGridComponent = grid;
 }
 
 void CharacterComponent::SetGridPosition(int layer, int number)
@@ -133,7 +147,6 @@ void CharacterComponent::SetGridPosition(int layer, int number)
 
 void CharacterComponent::SetGridPosition(Himinn::IVector2 position)
 {
-	bool update{ true };
 	m_GridPosition = position;
 	Himinn::IVector2 nodeCharacterPosition = m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y);
 
@@ -145,13 +158,20 @@ void CharacterComponent::SetGridPosition(Himinn::IVector2 position)
 		if (!m_pGridComponent.lock()->CheckForLift(m_GridPosition.x, m_GridPosition.y))
 			LoseLife();
 		
-		update = false;
 		m_GridPosition = { 0, 0 };
 	}
 	
 	m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
-	if (update)
-		m_pGridComponent.lock()->UpgradeNode(m_GridPosition.x, m_GridPosition.y);
+}
+
+void CharacterComponent::SetGridSpawnPosition(int layer, int number)
+{
+	SetGridSpawnPosition({ layer, number });
+}
+
+void CharacterComponent::SetGridSpawnPosition(Himinn::IVector2 position)
+{
+	m_GridSpawnPosition = position;
 }
 
 Himinn::IVector2 CharacterComponent::GetGridPosition() const

@@ -8,6 +8,7 @@
 
 namespace Himinn {
 	class ImageComponent;
+	class SubjectComponent;
 }
 
 class NodeComponent : public Himinn::Component
@@ -45,6 +46,7 @@ private:
 	
 	// Components
 	std::weak_ptr<Himinn::ImageComponent> m_pImageComponent;
+	std::weak_ptr<Himinn::SubjectComponent> m_pSubjectComponentt;
 
 	void SetTexture();
 };

@@ -2,7 +2,7 @@
 #include "SubjectComponent.h"
 #include <algorithm>
 
-#include "Observer.h"
+
 
 Himinn::SubjectComponent::SubjectComponent(const std::weak_ptr<GameObject>& owner)
 	: Component(owner)
@@ -25,7 +25,7 @@ void Himinn::SubjectComponent::Render()
 {
 }
 
-void Himinn::SubjectComponent::Notify(EventInfo eventInfo, ObserverEvent observerEvent) const
+void Himinn::SubjectComponent::Notify(EventInfo eventInfo, unsigned int observerEvent) const
 {
 	std::for_each(m_Observers.begin(), m_Observers.end(), [eventInfo, observerEvent](std::shared_ptr<Observer> var)
 		{

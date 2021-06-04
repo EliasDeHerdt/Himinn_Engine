@@ -10,6 +10,7 @@ namespace Himinn {
 	class Scene;
 }
 
+class NodeObserver;
 class GridComponent : public Himinn::Component
 {
 public:
@@ -27,11 +28,14 @@ public:
 
 	void ReadGridSettingsFile(const std::string& filePath);
 	void UpgradeNode(int layer, int number);
+	void UpdateNodeCompletion(bool nodeReady);
+	void CheckLevelFinished();
 	
+	Himinn::IVector2 GetLeftPeakPosition();
+	Himinn::IVector2 GetRightPeakPosition();
 	Himinn::IVector2 GetNodeCharacterPosition(int layer, int number);
 	std::weak_ptr<Himinn::GameObject> GetNode(int layer, int number) const;
 	bool CheckForLift(int layer, int number);
-
 private:
 	// Node settings
 	bool m_NodeCanCycle;
@@ -48,6 +52,8 @@ private:
 	// Grid
 	Himinn::Scene& m_Scene;
 	Himinn::IVector2 m_NodeOffset;
+	unsigned int m_NodesCompleted;
+	std::shared_ptr<NodeObserver> m_pNodeObserver;
 	std::vector<std::shared_ptr<Himinn::GameObject>> m_pGameObjects;
 
 	void GenerateGrid();

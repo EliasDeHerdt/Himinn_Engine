@@ -171,14 +171,14 @@
     <ClInclude Include="AudioLibrary.h">
       <Filter>Singletons\AudioLibrary</Filter>
     </ClInclude>
-    <ClInclude Include="..\3rdParty\Simple_SDL2_Audio\audio.h">
-      <Filter>SimpleSDLAudio</Filter>
-    </ClInclude>
     <ClInclude Include="SoundLogger.h">
       <Filter>SoundSystem\Decorators</Filter>
     </ClInclude>
     <ClInclude Include="DataTypes.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\Simple_SDL2_Audio\audio.h">
+      <Filter>SimpleSDLAudio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -278,14 +278,14 @@
     <ClCompile Include="AudioLibrary.cpp">
       <Filter>Singletons\AudioLibrary</Filter>
     </ClCompile>
-    <ClCompile Include="..\3rdParty\Simple_SDL2_Audio\audio.c">
-      <Filter>SimpleSDLAudio</Filter>
-    </ClCompile>
     <ClCompile Include="SoundServiceLocator.cpp">
       <Filter>ServiceLocator</Filter>
     </ClCompile>
     <ClCompile Include="SoundLogger.cpp">
       <Filter>SoundSystem\Decorators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\Simple_SDL2_Audio\audio.c">
+      <Filter>SimpleSDLAudio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

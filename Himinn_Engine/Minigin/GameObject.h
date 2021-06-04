@@ -32,7 +32,8 @@ namespace Himinn
 		const Transform& GetTransform() const;
 
 		template<typename T>
-		bool AddComponent(weak_ptr<T> component)
+		typename std::enable_if<std::is_base_of<Component, T>::value, bool>::type
+		AddComponent(weak_ptr<Component> component)
 		{
 			if (component.expired()
 				|| component.use_count() != 1
@@ -40,6 +41,7 @@ namespace Himinn
 				return false;
 			
 			m_Components.push_back(component.lock());
+			std::static_pointer_cast<Component>(component.lock())->OnAddedToObject();
 			return true;
 		}
 		template<typename T>

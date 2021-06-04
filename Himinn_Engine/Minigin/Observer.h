@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace Himinn
 {
@@ -7,17 +8,6 @@ namespace Himinn
 		int intInfo;
 		float floatInfo;
 		std::string stringInfo;
-	};
-	
-	enum class ObserverEvent
-	{
-		PlayerDied,
-		PlayerScore,
-		PointsColorChange,
-		PointsDefeatCoily,
-		PointsDiscsLeft,
-		PointsCatchSlick,
-		PointsCatchSam
 	};
 	
 	class GameObject;
@@ -31,6 +21,6 @@ namespace Himinn
 		Observer(Observer&& other) = delete;
 		Observer& operator=(Observer&& other) = delete;
 
-		virtual void OnNotify(EventInfo eventInfo, ObserverEvent event) = 0;
+		virtual void OnNotify(EventInfo eventInfo, unsigned int event) = 0;
 	};
 }

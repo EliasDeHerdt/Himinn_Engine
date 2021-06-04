@@ -3,6 +3,17 @@
 
 namespace Himinn
 {
+	enum class ObserverEvent
+	{
+		PlayerDied,
+		PlayerScore,
+		PointsColorChange,
+		PointsDefeatCoily,
+		PointsDiscsLeft,
+		PointsCatchSlick,
+		PointsCatchSam
+	};
+	
 	class LivesComponent;
 	class ScoreComponent;
 	class PlayerObserver final : public Observer
@@ -15,7 +26,7 @@ namespace Himinn
 		PlayerObserver(PlayerObserver&& other) = delete;
 		PlayerObserver& operator=(PlayerObserver&& other) = delete;
 
-		void OnNotify(EventInfo eventInfo, ObserverEvent event) override;
+		void OnNotify(EventInfo eventInfo, unsigned int event) override;
 
 		bool SetLivesComponent(std::weak_ptr<LivesComponent> livesComp);
 		bool SetScoreComponent(std::weak_ptr<ScoreComponent> pointsComp);

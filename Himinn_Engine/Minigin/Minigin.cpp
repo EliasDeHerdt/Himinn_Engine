@@ -69,7 +69,7 @@ void Himinn::Minigin::Initialize()
 /**
  * Code constructing the scene world starts here
  */
-void Himinn::Minigin::LoadGame() const
+void Himinn::Minigin::LoadGame()
 {
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	int lives = 3;
@@ -196,7 +196,11 @@ void Himinn::Minigin::LoadGame() const
 void Himinn::Minigin::Cleanup()
 {
 	Renderer::GetInstance().Destroy();
-	delete SoundServiceLocator::GetSoundSystem();
+
+	endAudio();
+	if (dynamic_cast<NullSoundSystem*>(SoundServiceLocator::GetSoundSystem()) == nullptr)
+		delete SoundServiceLocator::GetSoundSystem();
+
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	SDL_Quit();
