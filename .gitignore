@@ -3,10 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Allow .lib & .dll
-!*.lib
-!*.dll
-!*/
+# Allow the 3rdParty folder
+!/3rdParty/
 
 # User-specific files
 *.rsuser
