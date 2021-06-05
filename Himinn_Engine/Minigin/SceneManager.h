@@ -9,15 +9,15 @@ namespace Himinn
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
-		Scene& CreateScene(const std::string& name);
+		std::weak_ptr<Himinn::Scene> CreateScene(const std::string& name);
 		void SetActiveScene(const std::string& name);
+		std::weak_ptr<Scene> GetActiveScene() const;
 		
 		void FixedUpdate();
 		void Update();
 		void LateUpdate();
 		void Render();
 
-		std::weak_ptr<Scene> GetActiveScene() const;
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;

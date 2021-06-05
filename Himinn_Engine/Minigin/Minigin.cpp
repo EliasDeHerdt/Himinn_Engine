@@ -71,7 +71,7 @@ void Himinn::Minigin::Initialize()
  */
 void Himinn::Minigin::LoadGame()
 {
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
+	auto scene = SceneManager::GetInstance().CreateScene("Demo");
 	int lives = 3;
 	SDL_Color color = SDL_Color{ 0, 255, 0 };
 	shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
@@ -83,19 +83,19 @@ void Himinn::Minigin::LoadGame()
 	// Background
 	auto go = std::make_shared<GameObject>();
 	go->AddComponent<ImageComponent>(make_shared<ImageComponent>(go, "background.jpg"));
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	// Logo
 	go = std::make_shared<GameObject>();
 	go->AddComponent<ImageComponent>(make_shared<ImageComponent>(go, "logo.png"));
 	go->SetPosition(216, 180);
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	// FPS
 	go = std::make_shared<GameObject>();
 	go->AddComponent<FPSComponent>(make_shared<FPSComponent>(go, font, color));
 	go->SetPosition(0, 0);
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	// Title
 	color = SDL_Color{ 255, 0, 0 };
@@ -104,7 +104,7 @@ void Himinn::Minigin::LoadGame()
 	go = std::make_shared<GameObject>();
 	go->AddComponent<TextComponent>(make_shared<TextComponent>(go, "Programming 4 Assignment", font, color));
 	go->SetPosition(80, 20);
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	// Player 1
 	// Lives Component
@@ -114,7 +114,7 @@ void Himinn::Minigin::LoadGame()
 	go = std::make_shared<GameObject>();
 	go->AddComponent<LivesComponent>(make_shared<LivesComponent>(go, lives, font, color));
 	go->SetPosition(10, 390);
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	pPlayerOneObserver->SetLivesComponent(go->GetComponent<LivesComponent>());
 
@@ -122,7 +122,7 @@ void Himinn::Minigin::LoadGame()
 	go = std::make_shared<GameObject>();
 	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
 	go->SetPosition(10, 410);
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	pPlayerOneObserver->SetScoreComponent(go->GetComponent<ScoreComponent>());
 
@@ -133,7 +133,7 @@ void Himinn::Minigin::LoadGame()
 	player1->AddComponent<PlayerComponent>(make_shared<PlayerComponent>(player1, lives));
 	player1->AddComponent<ImageComponent>(make_shared<ImageComponent>(player1, "QBert.png"));
 	player1->SetPosition(150, 390);
-	scene.Add(player1);
+	scene.lock()->Add(player1);
 	
 	// Player 2
 	// Lives Component
@@ -142,7 +142,7 @@ void Himinn::Minigin::LoadGame()
 	go = std::make_shared<GameObject>();
 	go->AddComponent<LivesComponent>(make_shared<LivesComponent>(go, lives, font, color));
 	go->SetPosition(10, 430);
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	pPlayerTwoObserver->SetLivesComponent(go->GetComponent<LivesComponent>());
 
@@ -150,7 +150,7 @@ void Himinn::Minigin::LoadGame()
 	go = std::make_shared<GameObject>();
 	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
 	go->SetPosition(10, 450);
-	scene.Add(go);
+	scene.lock()->Add(go);
 
 	pPlayerTwoObserver->SetScoreComponent(go->GetComponent<ScoreComponent>());
 	
@@ -161,7 +161,7 @@ void Himinn::Minigin::LoadGame()
 	player2->AddComponent<PlayerComponent>(make_shared<PlayerComponent>(player2, lives));
 	player2->AddComponent<ImageComponent>(make_shared<ImageComponent>(player2, "Coily.png"));
 	player2->SetPosition(160, 430);
-	scene.Add(player2);
+	scene.lock()->Add(player2);
 
 	// Input
 	InputManager& inputManager = InputManager::GetInstance();

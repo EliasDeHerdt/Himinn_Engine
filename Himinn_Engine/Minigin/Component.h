@@ -1,6 +1,6 @@
 #pragma once
+#include <memory>
 
-using namespace std;
 namespace Himinn {
 
 	class GameObject;
@@ -25,6 +25,6 @@ namespace Himinn {
 	
 	protected:
 		bool m_NeedsUpdate = false;
-		weak_ptr<GameObject> m_Owner;
+		std::weak_ptr<GameObject> m_Owner;
 	};
 }

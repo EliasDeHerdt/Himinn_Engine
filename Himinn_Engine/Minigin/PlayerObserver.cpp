@@ -10,10 +10,10 @@ void Himinn::PlayerObserver::OnNotify(EventInfo eventInfo, unsigned int event)
 	switch (event)
 	{
 	case 0:
-		m_pLivesText.lock()->SetCurrentLives(eventInfo.intInfo);
+		m_pLivesText.lock()->SetCurrentLives(eventInfo.intInfo.at(0));
 		break;
 	case 1:
-		m_pScoreText.lock()->SetCurrentScore(eventInfo.intInfo);
+		m_pScoreText.lock()->SetCurrentScore(eventInfo.intInfo.at(0));
 		break;
 	default: break;
 	}

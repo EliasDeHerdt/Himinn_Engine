@@ -9,7 +9,7 @@ namespace Himinn
 	class ScoreComponent : public Component
 	{
 	public:
-		ScoreComponent(const std::weak_ptr<GameObject>& owner, const shared_ptr<Font>& font, const SDL_Color& color);
+		ScoreComponent(const std::weak_ptr<GameObject>& owner, const std::shared_ptr<Font>& font, const SDL_Color& color);
 		virtual ~ScoreComponent() = default;
 		ScoreComponent(const ScoreComponent& other) = delete;
 		ScoreComponent& operator=(const ScoreComponent& other) = delete;

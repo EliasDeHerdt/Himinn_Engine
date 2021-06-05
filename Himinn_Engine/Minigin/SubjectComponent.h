@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Observer.h"
+#include <memory>
 
 namespace Himinn
 {
@@ -24,7 +25,7 @@ namespace Himinn
 		template<typename T>
 		void NotifySpecific(EventInfo eventInfo, unsigned int observerEvent) const
 		{
-			for (shared_ptr<Observer> comp : m_Observers)
+			for (std::shared_ptr<Observer> comp : m_Observers)
 				if (std::dynamic_pointer_cast<T>(comp) != nullptr) {
 					comp->OnNotify(eventInfo, observerEvent);
 					return;

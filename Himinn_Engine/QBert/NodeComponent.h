@@ -25,6 +25,7 @@ public:
 	virtual void Update() override;
 	virtual void LateUpdate() override;
 	virtual void Render() override;
+	virtual void OnAddedToObject() override;
 
 	const Himinn::IVector2& GetPlayerOffset() const;
 	void SetPlayerOffset(Himinn::IVector2 position);
@@ -46,7 +47,7 @@ private:
 	
 	// Components
 	std::weak_ptr<Himinn::ImageComponent> m_pImageComponent;
-	std::weak_ptr<Himinn::SubjectComponent> m_pSubjectComponentt;
+	std::weak_ptr<Himinn::SubjectComponent> m_pSubjectComponent;
 
 	void SetTexture();
 };

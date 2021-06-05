@@ -1,6 +1,5 @@
 #include "NodeObserver.h"
 
-
 #include "GridComponent.h"
 #include "NodeComponent.h"
 

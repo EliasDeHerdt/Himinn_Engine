@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "Scene.h"
 #include "DataTypes.h"
+#include "LevelManagerComponent.h"
 
 #include "TextComponent.h"
 #include "ImageComponent.h"
@@ -27,21 +28,44 @@
 #include "Command.h"
 #include "Commands.h"
 #include "GridComponent.h"
+#include "PlayerManagerComponent.h"
+#include "LevelManagerComponent.h"
+#include "ManagerObserver.h"
 
 Game::Game()
 	: Minigin()
-	, m_PlayerManager()
-	, m_pGridComponent()
+	, m_ManagerObserver(std::make_shared<ManagerObserver>())
+	, m_ManagerObject(std::make_shared<Himinn::GameObject>())
+	, m_LevelManagerComponent(std::make_shared<LevelManagerComponent>(m_ManagerObject))
+	, m_PlayerManagerComponent(std::make_shared<PlayerManagerComponent>(m_ManagerObject))
 {
+	m_ManagerObserver->SetLevelManager(m_LevelManagerComponent);
+	m_ManagerObserver->SetPlayerManager(m_PlayerManagerComponent);
+
+	auto subjectComp = std::make_shared<Himinn::SubjectComponent>(m_ManagerObject);
+	subjectComp->AddObserver(m_ManagerObserver);
+	m_ManagerObject->AddComponent<Himinn::SubjectComponent>(subjectComp);
+	m_ManagerObject->AddComponent<LevelManagerComponent>(m_LevelManagerComponent);
+	m_ManagerObject->AddComponent<PlayerManagerComponent>(m_PlayerManagerComponent);
 }
 
 void Game::LoadGame()
 {
-	LoadLevel1();
-	//LoadLevel2();
-	//LoadLevel3();
+	m_PlayerManagerComponent->SetGameMode(GameMode::Coop);
+	m_LevelManagerComponent->AddLevel("Level1", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt");
+	m_LevelManagerComponent->AddLevel("Level2", "../Data/QBert/LevelSettings/LevelSettings_Level2.txt");
+	m_LevelManagerComponent->AddLevel("Level3", "../Data/QBert/LevelSettings/LevelSettings_Level3.txt");
+	
+	// SoundService
+	Himinn::SoundServiceLocator::RegisterSoundSystem(new Himinn::SoundLogger(new Himinn::SDLSoundSytem()));
+	//SoundServiceLocator::RegisterSoundSystem(new SoundLogger(new SDLSoundSytem(), true));
 
-	//Himinn::SceneManager::GetInstance().SetActiveScene("Level2");
+	Himinn::SoundServiceLocator::GetSoundSystem()->SetVolume(80);
+
+	// Audio
+	Himinn::AudioLibrary::GetInstance().AddAudioFile("../Data/QBert/Audio/Elevator.wav");
+
+	m_LevelManagerComponent->StartGame();
 }
 
 void Game::Cleanup()
@@ -51,52 +75,15 @@ void Game::Cleanup()
 
 void Game::LoadLevel1()
 {
-	auto& scene = Himinn::SceneManager::GetInstance().CreateScene("Level1");
-	int lives = 3;
-	SDL_Color color = SDL_Color{ 0, 255, 0 };
-	std::shared_ptr<Himinn::Font> font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-
-	// Observers
-	std::shared_ptr<Himinn::PlayerObserver> pPlayerOneObserver{ make_shared<Himinn::PlayerObserver>() };
-
-	// Background
-	auto go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(go, "background.jpg"));
-	scene.Add(go);
-
-	// Grid
-	go = std::make_shared<Himinn::GameObject>();
-	m_pGridComponent = make_shared<GridComponent>(go, scene, "../Data/QBert/LevelSettings/LevelSettings_Level1.txt");
-	go->AddComponent<GridComponent>(m_pGridComponent);
-	scene.Add(go);
-
-	// FPS
-	go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::FPSComponent>(make_shared<Himinn::FPSComponent>(go, font, color));
-	go->SetPosition(0, 0);
-	scene.Add(go);
-
-	// Player 1
-	// Lives Component
-	color = SDL_Color{ 255, 125, 0 };
-	font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
-
-	go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::LivesComponent>(make_shared<Himinn::LivesComponent>(go, lives, font, color));
-	go->SetPosition(10, 20);
-	scene.Add(go);
-	
-	pPlayerOneObserver->SetLivesComponent(go->GetComponent<Himinn::LivesComponent>());
-
-	// Score Component
-	go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::ScoreComponent>(make_shared<Himinn::ScoreComponent>(go, font, color));
-	go->SetPosition(10, 40);
-	scene.Add(go);
-
-	pPlayerOneObserver->SetScoreComponent(go->GetComponent<Himinn::ScoreComponent>());
-	
-	m_PlayerManager.SetupManagerForLevel(m_pGridComponent);
+	//auto levelObject{ make_shared<Himinn::GameObject>() };
+	//auto levelComp{ make_shared<LevelManagerComponent>(levelObject, scene, "Level2", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt" ) };
+	//levelObject->AddComponent<LevelManagerComponent>(levelComp);
+	//
+	//m_PlayerManagerObject->SetupManagerForLevel(levelObject, levelComp->GetGrid());
+	//levelObject->AddComponent<PlayerManagerComponent>(m_PlayerManagerObject);
+	//
+	//scene.Add(levelObject);
+	//m_Levels.push_back(levelObject);
 	//// Player Component
 	//auto player1 = std::make_shared<Himinn::GameObject>();
 	//player1->AddComponent<Himinn::SubjectComponent>(make_shared<Himinn::SubjectComponent>(player1));
@@ -104,123 +91,28 @@ void Game::LoadLevel1()
 	//player1->AddComponent<CharacterComponent>(make_shared<CharacterComponent>(player1, gridComp, lives));
 	//player1->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(player1, "QBert/Characters/Character_QBert.png"));
 	//scene.Add(player1);
-
-	// SoundService
-	Himinn::SoundServiceLocator::RegisterSoundSystem(new Himinn::SoundLogger(new Himinn::SDLSoundSytem()));
-	//SoundServiceLocator::RegisterSoundSystem(new SoundLogger(new SDLSoundSytem(), true));
-
-	Himinn::SoundServiceLocator::GetSoundSystem()->SetVolume(80);
-
-	// Audio
-	Himinn::AudioLibrary::GetInstance().AddAudioFile("../Data/QBert/Audio/Elevator.wav");
 }
 
 void Game::LoadLevel2()
 {
-	auto& scene = Himinn::SceneManager::GetInstance().CreateScene("Level2");
-	int lives = 3;
-	SDL_Color color = SDL_Color{ 0, 255, 0 };
-	std::shared_ptr<Himinn::Font> font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-
-	// Background
-	auto go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(go, "background.jpg"));
-	scene.Add(go);
-
-	// Node Test
-	go = std::make_shared<Himinn::GameObject>();
-	auto gridComp = make_shared<GridComponent>(go, scene, "../Data/QBert/LevelSettings/LevelSettings_Level1.txt");
-	go->AddComponent<GridComponent>(gridComp);
-	scene.Add(go);
-
-	// FPS
-	go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::FPSComponent>(make_shared<Himinn::FPSComponent>(go, font, color));
-	go->SetPosition(0, 0);
-	scene.Add(go);
-
-	// Player Component
-	auto player1 = std::make_shared<Himinn::GameObject>();
-	player1->AddComponent<CharacterComponent>(make_shared<CharacterComponent>(player1, gridComp, lives));
-	player1->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(player1, "QBert/Characters/Character_QBert.png"));
-	scene.Add(player1);
-
-	// Input
-	Himinn::InputManager& inputManager = Himinn::InputManager::GetInstance();
-
-	// Player 1 Commands
-	inputManager.AddCommand("PlayerMoveTopLeft", new MoveCommand(player1, Himinn::QBertDirection::TopLeft));
-	inputManager.AddCommand("PlayerMoveTopRight", new MoveCommand(player1, Himinn::QBertDirection::TopRight));
-	inputManager.AddCommand("PlayerMoveBottomLeft", new MoveCommand(player1, Himinn::QBertDirection::BottomLeft));
-	inputManager.AddCommand("PlayerMoveBottomRight", new MoveCommand(player1, Himinn::QBertDirection::BottomRight));
-
-	inputManager.BindButtonInput(0, VK_PAD_Y, "PlayerMoveTopLeft");
-	inputManager.BindButtonInput(0, VK_PAD_B, "PlayerMoveTopRight");
-	inputManager.BindButtonInput(0, VK_PAD_X, "PlayerMoveBottomLeft");
-	inputManager.BindButtonInput(0, VK_PAD_A, "PlayerMoveBottomRight");
-
-	// SoundService
-	Himinn::SoundServiceLocator::RegisterSoundSystem(new Himinn::SoundLogger(new Himinn::SDLSoundSytem()));
-	//SoundServiceLocator::RegisterSoundSystem(new SoundLogger(new SDLSoundSytem(), true));
-
-	Himinn::SoundServiceLocator::GetSoundSystem()->SetVolume(80);
-
-	// Audio
-	Himinn::AudioLibrary::GetInstance().AddAudioFile("../Data/QBert/Audio/Elevator.wav");
+	/*auto& scene = Himinn::SceneManager::GetInstance().CreateScene("Level2");
+	
+	auto levelObject{ make_shared<Himinn::GameObject>() };
+	auto levelComp{ make_shared<LevelManagerComponent>(levelObject, scene, "Level3", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt") };
+	levelObject->AddComponent<LevelManagerComponent>(levelComp);
+	
+	scene.Add(levelObject);
+	m_Levels.push_back(levelObject);*/
 }
 
 void Game::LoadLevel3()
 {
-	auto& scene = Himinn::SceneManager::GetInstance().CreateScene("Level3");
-	int lives = 3;
-	SDL_Color color = SDL_Color{ 0, 255, 0 };
-	std::shared_ptr<Himinn::Font> font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-
-	// Observers
-	std::shared_ptr<Himinn::PlayerObserver> pPlayerOneObserver{ make_shared<Himinn::PlayerObserver>() };
-
-	// Background
-	auto go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(go, "background.jpg"));
-	scene.Add(go);
-
-	// Node Test
-	go = std::make_shared<Himinn::GameObject>();
-	auto gridComp = make_shared<GridComponent>(go, scene, "../Data/QBert/LevelSettings/LevelSettings_Level1.txt");
-	go->AddComponent<GridComponent>(gridComp);
-	scene.Add(go);
-
-	// FPS
-	go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::FPSComponent>(make_shared<Himinn::FPSComponent>(go, font, color));
-	go->SetPosition(0, 0);
-	scene.Add(go);
-
-	// Player 1
-	// Lives Component
-	color = SDL_Color{ 255, 125, 0 };
-	font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
-
-	go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::LivesComponent>(make_shared<Himinn::LivesComponent>(go, lives, font, color));
-	go->SetPosition(10, 20);
-	scene.Add(go);
-
-	pPlayerOneObserver->SetLivesComponent(go->GetComponent<Himinn::LivesComponent>());
-
-	// Score Component
-	go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::ScoreComponent>(make_shared<Himinn::ScoreComponent>(go, font, color));
-	go->SetPosition(10, 40);
-	scene.Add(go);
-
-	pPlayerOneObserver->SetScoreComponent(go->GetComponent<Himinn::ScoreComponent>());
-
-	// Player Component
-	auto player1 = std::make_shared<Himinn::GameObject>();
-	player1->AddComponent<Himinn::SubjectComponent>(make_shared<Himinn::SubjectComponent>(player1));
-	player1->GetComponent<Himinn::SubjectComponent>().lock()->AddObserver(pPlayerOneObserver);
-	player1->AddComponent<CharacterComponent>(make_shared<CharacterComponent>(player1, gridComp, lives));
-	player1->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(player1, "QBert/Characters/Character_QBert.png"));
-	scene.Add(player1);
+	/*auto& scene = Himinn::SceneManager::GetInstance().CreateScene("Level3");
+	
+	auto levelObject{ make_shared<Himinn::GameObject>() };
+	auto levelComp{ make_shared<LevelManagerComponent>(levelObject, scene, "", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt") };
+	levelObject->AddComponent<LevelManagerComponent>(levelComp);
+	
+	scene.Add(levelObject);
+	m_Levels.push_back(levelObject);*/
 }

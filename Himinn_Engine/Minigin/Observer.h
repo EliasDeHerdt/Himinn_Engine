@@ -1,13 +1,19 @@
 #pragma once
 #include <string>
+#include <vector>
+
+#include "DataTypes.h"
+#include "Component.h"
 
 namespace Himinn
 {
 	struct EventInfo
 	{
-		int intInfo;
-		float floatInfo;
-		std::string stringInfo;
+		std::vector<int> intInfo;
+		std::vector<float> floatInfo;
+		std::vector<std::string> stringInfo;
+		std::vector<IVector2> iVector2Info;
+		std::vector<std::weak_ptr<void>> pointerInfo;
 	};
 	
 	class GameObject;

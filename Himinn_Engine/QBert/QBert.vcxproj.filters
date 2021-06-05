@@ -51,17 +51,23 @@
     <ClCompile Include="LiftComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
     <ClCompile Include="NodeObserver.cpp">
       <Filter>Observers</Filter>
     </ClCompile>
-    <ClCompile Include="LevelManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
     <ClCompile Include="EnemyManager.cpp">
       <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="GridObserver.cpp">
+      <Filter>Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelManagerComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerManagerComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ManagerObserver.cpp">
+      <Filter>Observers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,17 +89,23 @@
     <ClInclude Include="LiftComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerManager.h">
-      <Filter>Managers</Filter>
-    </ClInclude>
     <ClInclude Include="NodeObserver.h">
       <Filter>Observers</Filter>
     </ClInclude>
-    <ClInclude Include="LevelManager.h">
-      <Filter>Managers</Filter>
-    </ClInclude>
     <ClInclude Include="EnemyManager.h">
       <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="GridObserver.h">
+      <Filter>Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelManagerComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManagerComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagerObserver.h">
+      <Filter>Observers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -24,7 +24,7 @@ void Himinn::SoundLogger::SetVolume(float volume)
 {
 	if (!muted)
 		m_pRealSS->SetVolume(volume);
-	std::cout << "Set general volume to" << to_string(volume) << '\n';
+	std::cout << "Set general volume to " << to_string(volume) << '\n';
 }
 
 void Himinn::SoundLogger::QueueSound(const unsigned char id, const float volume)

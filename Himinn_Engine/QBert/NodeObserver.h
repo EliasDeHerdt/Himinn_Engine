@@ -1,12 +1,11 @@
 #pragma once
-#include <memory>
-
 #include "Observer.h"
+#include <memory>
 
 enum class NodeObserverEvent
 {
 	NodeReady,
-	NodeNotReady
+	NodeNotReady,
 };
 
 class GridComponent;

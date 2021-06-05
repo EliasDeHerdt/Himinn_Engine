@@ -1,0 +1,21 @@
+//Settings File
+//NC = NodeCycle
+//NO = NodeOffset
+//LA = LayerAmount
+//LL = LiftLayers
+//SL = StartLevel
+//SP = StartPosition
+//PO = PlayerOffset
+//TB = TextureBlock
+//TL = LiftTexture
+//------------------
+NC=TRUE
+SL=0
+LA=7
+SP=288;100
+PO=0;-32
+NO=0;-16
+LL=1;4
+TB=QBert/LevelAssets/Floor_Level_1.png
+TB=QBert/LevelAssets/Floor_Level_2.png
+TL=QBert/LevelAssets/Floor_Elevator.png

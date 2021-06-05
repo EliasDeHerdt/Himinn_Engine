@@ -1,16 +1,18 @@
 #include "GridComponent.h"
 
 #include <fstream>
+#include <iostream>
 #include <regex>
 #include "Scene.h"
 #include "GameObject.h"
+#include "GridObserver.h"
 #include "NodeObserver.h"
 #include "ImageComponent.h"
 #include "LiftComponent.h"
 #include "NodeComponent.h"
 #include "SubjectComponent.h"
 
-GridComponent::GridComponent(const std::weak_ptr<Himinn::GameObject>& owner, Himinn::Scene& scene, const std::string& filePath)
+GridComponent::GridComponent(const std::weak_ptr<Himinn::GameObject>& owner, std::weak_ptr<Himinn::Scene> scene, const std::string& filePath)
 	: Component(owner)
 	, m_NodeCanCycle()
 	, m_NodeStartLevel()
@@ -24,9 +26,8 @@ GridComponent::GridComponent(const std::weak_ptr<Himinn::GameObject>& owner, Him
 	, m_NodeOffset()
 	, m_NodesCompleted()
 	, m_pNodeObserver(std::make_shared<NodeObserver>())
-	, m_pGameObjects()
+	, m_pNodes()
 {
-	m_pNodeObserver->SetGridComponent(m_Owner.lock()->GetComponent<GridComponent>());
 	ReadGridSettingsFile(filePath);
 	GenerateGrid();
 }
@@ -45,6 +46,18 @@ void GridComponent::LateUpdate()
 
 void GridComponent::Render()
 {
+}
+
+void GridComponent::OnAddedToObject()
+{
+	//since we are the nodeobserver, this will always succeed!
+	m_pNodeObserver->SetGridComponent(m_Owner.lock()->GetComponent<GridComponent>());
+	
+	auto subjectComp{ m_Owner.lock()->GetComponent<Himinn::SubjectComponent>() };
+	if (subjectComp.expired())
+		std::cout << "GridComponent: No SubjectComponent was present, no observations will be made.\n";
+	else
+		m_pSubjectComponent = subjectComp;
 }
 
 void GridComponent::ReadGridSettingsFile(const std::string& filePath)
@@ -137,6 +150,9 @@ void GridComponent::UpdateNodeCompletion(bool nodeReady)
 
 void GridComponent::CheckLevelFinished()
 {
+	if (m_NodesCompleted == m_pNodes.size()
+		&& !m_pSubjectComponent.expired())
+		m_pSubjectComponent.lock()->Notify({}, (unsigned)GridObserverEvent::GridCompleted);
 }
 
 Himinn::IVector2 GridComponent::GetLeftPeakPosition()
@@ -155,7 +171,7 @@ Himinn::IVector2 GridComponent::GetNodeCharacterPosition(int layer, int number)
 	if (index == -1)
 		return { -1, -1 };
 	
-	auto node = m_pGameObjects.at(index);
+	auto node = m_pNodes.at(index);
 	auto nodePlayerOffset = node->GetComponent<NodeComponent>().lock()->GetPlayerOffset();
 	return Himinn::IVector2{ (int)nodePlayerOffset.x + (int)node->GetTransform().GetPosition().x, (int)nodePlayerOffset.y + (int)node->GetTransform().GetPosition().y };
 }
@@ -166,11 +182,14 @@ std::weak_ptr<Himinn::GameObject> GridComponent::GetNode(int layer, int number) 
 	if (index == -1)
 		return std::make_shared<Himinn::GameObject>();
 
-	return m_pGameObjects.at(index);
+	return m_pNodes.at(index);
 }
 
 void GridComponent::GenerateGrid()
 {
+	if (m_Scene.expired())
+		return;
+	
 	auto GridStartPos = m_Owner.lock()->GetTransform().GetPosition();
 	
 	// Grids
@@ -191,8 +210,8 @@ void GridComponent::GenerateGrid()
 			Himinn::IVector2 imgDim = gameObject->GetComponent<Himinn::ImageComponent>().lock()->GetTextureDimensions();
 			gameObject->SetPosition(GridStartPos.x + ((float)m_NodeOffset.x + imgDim.x) * j - (imgDim.x / 2) * i, GridStartPos.y + ((float)m_NodeOffset.y + imgDim.y) * i);
 			
-			m_Scene.Add(gameObject);
-			m_pGameObjects.push_back(gameObject);
+			m_Scene.lock()->Add(gameObject);
+			m_pNodes.push_back(gameObject);
 		}
 	}
 
@@ -213,7 +232,7 @@ void GridComponent::GenerateGrid()
 	Himinn::IVector2 imgDim = lift->GetComponent<Himinn::ImageComponent>().lock()->GetTextureDimensions();
 	lift->SetPosition(GridStartPos.x - ((float)m_NodeOffset.x + imgDim.x) - ((imgDim.x / 2) * m_NodeLiftLayers.x), GridStartPos.y + ((float)m_NodeOffset.y + imgDim.y) * m_NodeLiftLayers.x);
 
-	m_Scene.Add(lift);
+	m_Scene.lock()->Add(lift);
 	m_pLifts.push_back(lift);
 	
 	// Left Lift
@@ -224,7 +243,7 @@ void GridComponent::GenerateGrid()
 	imgDim = lift->GetComponent<Himinn::ImageComponent>().lock()->GetTextureDimensions();
 	lift->SetPosition(GridStartPos.x + ((float)m_NodeOffset.x + imgDim.x) * (m_NodeLiftLayers.y + 1) - ((imgDim.x / 2) * m_NodeLiftLayers.y), GridStartPos.y + ((float)m_NodeOffset.y + imgDim.y) * m_NodeLiftLayers.y);
 
-	m_Scene.Add(lift);
+	m_Scene.lock()->Add(lift);
 	m_pLifts.push_back(lift);
 }
 
@@ -238,7 +257,7 @@ int GridComponent::GetListIndex(int layer, int number) const
 	for (int i = 1; i <= layer; ++i)
 		index += i;
 
-	if (index >= m_pGameObjects.size())
+	if (index >= m_pNodes.size())
 		return -1;
 	
 	return (index + number);

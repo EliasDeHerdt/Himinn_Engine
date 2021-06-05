@@ -13,7 +13,7 @@ NodeComponent::NodeComponent(const std::weak_ptr<Himinn::GameObject>& owner, con
 	, m_NodeLevel(0)
 	, m_TexturePaths(textures)
 	, m_pImageComponent()
-	, m_pSubjectComponentt()
+	, m_pSubjectComponent()
 {
 	std::string path{};
 	if (!textures.empty())
@@ -28,11 +28,7 @@ NodeComponent::NodeComponent(const std::weak_ptr<Himinn::GameObject>& owner, con
 		std::cout << "NodeComponent: A ImageComponent was already present, so no new one was added.\n";
 	m_pImageComponent = owner.lock()->GetComponent<Himinn::ImageComponent>();
 
-	auto subjectComp{ owner.lock()->GetComponent<Himinn::SubjectComponent>() };
-	if (subjectComp.expired())
-		std::cout << "NodeComponent: No SubjectComponent was present, no observations will be made.\n";
-	else
-		m_pSubjectComponentt = subjectComp;
+	
 }
 
 void NodeComponent::FixedUpdate()
@@ -51,6 +47,15 @@ void NodeComponent::Render()
 {
 }
 
+void NodeComponent::OnAddedToObject()
+{
+	auto subjectComp{ m_Owner.lock()->GetComponent<Himinn::SubjectComponent>() };
+	if (subjectComp.expired())
+		std::cout << "NodeComponent: No SubjectComponent was present, no observations will be made.\n";
+	else
+		m_pSubjectComponent = subjectComp;
+}
+
 const Himinn::IVector2& NodeComponent::GetPlayerOffset() const
 {
 	return m_PlayerOffset;
@@ -66,11 +71,17 @@ void NodeComponent::IncrementNodeLevel()
 	if (m_CycleLevels)
 	{
 		if (m_NodeLevel + 1 < m_TexturePaths.size())
+		{
 			++m_NodeLevel;
+			if (m_NodeLevel == m_TexturePaths.size() - 1
+				&& !m_pSubjectComponent.expired())
+				m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
+		}
 		else
 		{
 			--m_NodeLevel;
-			m_pSubjectComponentt.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeNotReady);
+			if (!m_pSubjectComponent.expired())
+				m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeNotReady);
 		}
 		SetTexture();
 	}
@@ -80,11 +91,11 @@ void NodeComponent::IncrementNodeLevel()
 		{
 			++m_NodeLevel;
 			SetTexture();
+			if (m_NodeLevel == m_TexturePaths.size() - 1
+				&& !m_pSubjectComponent.expired())
+				m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
 		}
 	}
-
-	if (m_NodeLevel == m_TexturePaths.size() - 1)
-		m_pSubjectComponentt.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
 }
 
 void NodeComponent::SetNeighbor(std::weak_ptr<NodeComponent> nodeComponent, Himinn::QBertDirection direction)
@@ -114,8 +125,9 @@ void NodeComponent::SetNodeLevel(unsigned level)
 		m_NodeLevel = level;
 		SetTexture();
 
-		if (m_NodeLevel == m_TexturePaths.size() - 1)
-			m_pSubjectComponentt.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
+		if (m_NodeLevel == m_TexturePaths.size() - 1
+			&& !m_pSubjectComponent.expired())
+			m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
 	}
 }
 

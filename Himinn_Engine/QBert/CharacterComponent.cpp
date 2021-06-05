@@ -15,6 +15,7 @@ CharacterComponent::CharacterComponent(const std::weak_ptr<Himinn::GameObject>& 
 	, m_GridPosition()
 	, m_GridSpawnPosition()
 	, m_CanMove(true)
+	, m_CanUpgradeNodes(true)
 	, m_MovementTimer()
 	, m_MovementDelay(0.3f)
 	, m_pSubjectComponent()
@@ -72,7 +73,8 @@ int CharacterComponent::GetScore() const
 
 void CharacterComponent::Move(Himinn::QBertDirection direction)
 {
-	if (!m_CanMove)
+	if (!m_CanMove
+		|| m_pGridComponent.expired())
 		return;
 
 	m_CanMove = false;
@@ -93,7 +95,10 @@ void CharacterComponent::Move(Himinn::QBertDirection direction)
 		default: break;
 	}
 
-	m_pGridComponent.lock()->UpgradeNode(m_GridPosition.x, m_GridPosition.y);
+	if (m_CanUpgradeNodes)
+		m_pGridComponent.lock()->UpgradeNode(m_GridPosition.x, m_GridPosition.y);
+
+	m_CanUpgradeNodes = true;
 }
 
 void CharacterComponent::MoveToSpawn()
@@ -108,7 +113,8 @@ void CharacterComponent::LoseLife()
 	if (m_Lives - 1 >= 0)
 	{
 		--m_Lives;
-		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerDied);
+		if (!m_pSubjectComponent.expired())
+			m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ {m_Lives}, {0.f}, {""} }, (unsigned)Himinn::ObserverEvent::PlayerDied);
 	}
 }
 
@@ -119,12 +125,14 @@ void CharacterComponent::SetLives(int lives)
 	if (lives >= 0)
 	{
 		m_Lives = lives;
-		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerDied);
+		if (!m_pSubjectComponent.expired())
+			m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ {m_Lives}, {0.f}, {""} }, (unsigned)Himinn::ObserverEvent::PlayerDied);
 	}
 	else if (m_Lives != 0)
 	{
 		m_Lives = 0;
-		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Lives, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerDied);
+		if (!m_pSubjectComponent.expired())
+			m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ {m_Lives}, {0.f}, {""} }, (unsigned)Himinn::ObserverEvent::PlayerDied);
 	}
 }
 
@@ -132,7 +140,9 @@ void CharacterComponent::GainScore(ScoreGain scoreGain)
 {
 	int score = (int)scoreGain;
 	m_Score += score;
-	m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ m_Score, 0.f, "" }, (unsigned)Himinn::ObserverEvent::PlayerScore);
+	
+	if (!m_pSubjectComponent.expired())
+		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ {m_Score}, {0.f}, {""} }, (unsigned)Himinn::ObserverEvent::PlayerScore);
 }
 
 void CharacterComponent::SetGrid(const std::weak_ptr<GridComponent>& grid)
@@ -147,6 +157,9 @@ void CharacterComponent::SetGridPosition(int layer, int number)
 
 void CharacterComponent::SetGridPosition(Himinn::IVector2 position)
 {
+	if (m_pGridComponent.expired())
+		return;
+	
 	m_GridPosition = position;
 	Himinn::IVector2 nodeCharacterPosition = m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y);
 
@@ -159,6 +172,7 @@ void CharacterComponent::SetGridPosition(Himinn::IVector2 position)
 			LoseLife();
 		
 		m_GridPosition = { 0, 0 };
+		m_CanUpgradeNodes = false;
 	}
 	
 	m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));

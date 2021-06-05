@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "Component.h"
 #include "DataTypes.h"
@@ -13,7 +12,7 @@ namespace Himinn {
 class LiftComponent : public Himinn::Component
 {
 public:
-	LiftComponent(const weak_ptr<Himinn::GameObject>& owner, const std::string& texture, Himinn::IVector2 gridPosition, Himinn::IVector2 playerOffset = { 0, 0 });
+	LiftComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::string& texture, Himinn::IVector2 gridPosition, Himinn::IVector2 playerOffset = { 0, 0 });
 	virtual ~LiftComponent() override = default;
 	LiftComponent(const LiftComponent& other) = delete;
 	LiftComponent& operator=(const LiftComponent& other) = delete;

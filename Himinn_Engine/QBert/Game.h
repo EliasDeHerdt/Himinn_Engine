@@ -1,7 +1,11 @@
 #pragma once
 #include "Minigin.h"
-#include "PlayerManager.h"
+#include "PlayerManagerComponent.h"
 
+
+class ManagerObserver;
+class LevelManagerComponent;
+class PlayerManagerComponent;
 class Game : public Himinn::Minigin
 {
 public:
@@ -10,8 +14,10 @@ public:
 	virtual void Cleanup() override;
 
 private:
-	PlayerManager m_PlayerManager;
-	std::shared_ptr<GridComponent> m_pGridComponent;
+	std::shared_ptr<ManagerObserver> m_ManagerObserver;
+	std::shared_ptr<Himinn::GameObject> m_ManagerObject;
+	std::shared_ptr<LevelManagerComponent> m_LevelManagerComponent;
+	std::shared_ptr<PlayerManagerComponent> m_PlayerManagerComponent;
 	
 	void LoadLevel1();
 	void LoadLevel2();

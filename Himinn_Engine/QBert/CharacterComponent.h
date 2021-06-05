@@ -57,6 +57,7 @@ private:
 
 	// Movement
 	bool m_CanMove;
+	bool m_CanUpgradeNodes;
 	float m_MovementTimer;
 	float m_MovementDelay;
 

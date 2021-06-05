@@ -9,7 +9,7 @@ namespace Himinn
 	class LivesComponent : public Component
 	{
 	public:
-		LivesComponent(const std::weak_ptr<GameObject>& owner, int InitialLives, const shared_ptr<Font>& font, const SDL_Color& color);
+		LivesComponent(const std::weak_ptr<GameObject>& owner, int InitialLives, const std::shared_ptr<Font>& font, const SDL_Color& color);
 		virtual ~LivesComponent() = default;
 		LivesComponent(const LivesComponent& other) = delete;
 		LivesComponent& operator=(const LivesComponent& other) = delete;

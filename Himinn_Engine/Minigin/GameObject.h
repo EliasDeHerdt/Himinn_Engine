@@ -45,6 +45,20 @@ namespace Himinn
 			return true;
 		}
 		template<typename T>
+		typename std::enable_if<std::is_base_of<Component, T>::value, bool>::type
+		RemoveComponent()
+		{
+			weak_ptr<T> search = GetComponent<T>();
+			if (search.expired())
+				return false;
+
+			m_Components.erase(std::remove_if(m_Components.begin(), m_Components.end(), [search](shared_ptr<Component> rhs)
+			{
+				return search.lock() == rhs;
+			}), m_Components.end());
+			return true;
+		}
+		template<typename T>
 		weak_ptr<T> GetComponent() const {
 			weak_ptr<T> weak;
 			for (shared_ptr<Component> comp : m_Components) {

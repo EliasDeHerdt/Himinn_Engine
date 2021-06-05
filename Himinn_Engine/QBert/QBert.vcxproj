@@ -179,12 +179,14 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GridComponent.cpp" />
-    <ClCompile Include="LevelManager.cpp" />
+    <ClCompile Include="GridObserver.cpp" />
+    <ClCompile Include="LevelManagerComponent.cpp" />
     <ClCompile Include="LiftComponent.cpp" />
+    <ClCompile Include="ManagerObserver.cpp" />
     <ClCompile Include="NodeComponent.cpp" />
     <ClCompile Include="CharacterComponent.cpp" />
     <ClCompile Include="NodeObserver.cpp" />
-    <ClCompile Include="PlayerManager.cpp" />
+    <ClCompile Include="PlayerManagerComponent.cpp" />
     <ClCompile Include="QBert.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -192,12 +194,14 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GridComponent.h" />
-    <ClInclude Include="LevelManager.h" />
+    <ClInclude Include="GridObserver.h" />
+    <ClInclude Include="LevelManagerComponent.h" />
     <ClInclude Include="LiftComponent.h" />
+    <ClInclude Include="ManagerObserver.h" />
     <ClInclude Include="NodeComponent.h" />
     <ClInclude Include="CharacterComponent.h" />
     <ClInclude Include="NodeObserver.h" />
-    <ClInclude Include="PlayerManager.h" />
+    <ClInclude Include="PlayerManagerComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
