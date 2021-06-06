@@ -124,6 +124,11 @@ std::weak_ptr<Himinn::Scene> LevelManagerComponent::GetLevel(std::string name)
 	return std::weak_ptr<Himinn::Scene>();
 }
 
+std::weak_ptr<GridComponent> LevelManagerComponent::GetGrid(int i)
+{
+	return m_LevelGrids.at(i);
+}
+
 void LevelManagerComponent::SetActiveLevel(unsigned level)
 {
 	if (level > 0

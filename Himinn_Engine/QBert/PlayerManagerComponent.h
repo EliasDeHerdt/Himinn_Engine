@@ -1,10 +1,9 @@
 #pragma once
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "Component.h"
-
-class GridComponent;
 
 namespace Himinn {
 	class Scene;
@@ -25,6 +24,8 @@ struct PlayerControls
 	bool controller = false;
 };
 
+class PlayerObserver;
+class GridComponent;
 class PlayerManagerComponent : public Himinn::Component
 {
 public:
@@ -44,6 +45,7 @@ public:
 	void SetGameMode(GameMode gameMode);
 	void MovePlayersToSpawns();
 	void SetupManagerForLevel(std::weak_ptr<Himinn::Scene> scene, std::weak_ptr<GridComponent> grid);
+	void PlayerDied();
 
 private:
 	GameMode m_GameMode;
@@ -51,10 +53,11 @@ private:
 	int m_LivesPerPlayer;
 	bool m_PlayersInitialized;
 	std::vector<std::weak_ptr<Himinn::GameObject>> m_Levels;
+	std::vector<std::shared_ptr<PlayerObserver>> m_PlayerObservers;
 	std::vector<std::pair<std::shared_ptr<Himinn::GameObject>, PlayerControls>> m_Players;
 
 	std::weak_ptr<GridComponent> m_pGridComponent;
 	std::weak_ptr<Himinn::SubjectComponent> m_SubjectComponent;
 	
-	void AddPlayer(std::shared_ptr<Himinn::GameObject>& player, PlayerControls controls);
+	void AddPlayer(std::shared_ptr<Himinn::GameObject>& player, std::string texturePath, PlayerControls controls);
 };

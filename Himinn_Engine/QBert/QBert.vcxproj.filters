@@ -69,6 +69,18 @@
     <ClCompile Include="ManagerObserver.cpp">
       <Filter>Observers</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerObserver.cpp">
+      <Filter>Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="SlickAndSamComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="QBertComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="UggAndWrongwayComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -106,6 +118,21 @@
     </ClInclude>
     <ClInclude Include="ManagerObserver.h">
       <Filter>Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerObserver.h">
+      <Filter>Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="SlickAndSamComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="QBertComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="UggAndWrongwayComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

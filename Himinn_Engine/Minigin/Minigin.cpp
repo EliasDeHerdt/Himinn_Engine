@@ -23,7 +23,6 @@
 #include "PlayerComponent.h"
 #include "SubjectComponent.h"
 
-#include "PlayerObserver.h"
 #include "AudioLibrary.h"
 #include "SoundServiceLocator.h"
 #include "SoundLogger.h"
@@ -76,9 +75,6 @@ void Himinn::Minigin::LoadGame()
 	SDL_Color color = SDL_Color{ 0, 255, 0 };
 	shared_ptr<Font> font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 	
-	// Observers
-	std::shared_ptr<PlayerObserver> pPlayerOneObserver{make_shared<PlayerObserver>()};
-	std::shared_ptr<PlayerObserver> pPlayerTwoObserver{make_shared<PlayerObserver>()};
 	
 	// Background
 	auto go = std::make_shared<GameObject>();
@@ -115,21 +111,17 @@ void Himinn::Minigin::LoadGame()
 	go->AddComponent<LivesComponent>(make_shared<LivesComponent>(go, lives, font, color));
 	go->SetPosition(10, 390);
 	scene.lock()->Add(go);
-
-	pPlayerOneObserver->SetLivesComponent(go->GetComponent<LivesComponent>());
+	
 
 	// Score Component
 	go = std::make_shared<GameObject>();
 	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
 	go->SetPosition(10, 410);
 	scene.lock()->Add(go);
-
-	pPlayerOneObserver->SetScoreComponent(go->GetComponent<ScoreComponent>());
+	
 
 	// Player Component
 	auto player1 = std::make_shared<GameObject>();
-	player1->AddComponent<SubjectComponent>(make_shared<SubjectComponent>(player1));
-	player1->GetComponent<SubjectComponent>().lock()->AddObserver(pPlayerOneObserver);
 	player1->AddComponent<PlayerComponent>(make_shared<PlayerComponent>(player1, lives));
 	player1->AddComponent<ImageComponent>(make_shared<ImageComponent>(player1, "QBert.png"));
 	player1->SetPosition(150, 390);
@@ -143,21 +135,16 @@ void Himinn::Minigin::LoadGame()
 	go->AddComponent<LivesComponent>(make_shared<LivesComponent>(go, lives, font, color));
 	go->SetPosition(10, 430);
 	scene.lock()->Add(go);
-
-	pPlayerTwoObserver->SetLivesComponent(go->GetComponent<LivesComponent>());
+	
 
 	// Score Component
 	go = std::make_shared<GameObject>();
 	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
 	go->SetPosition(10, 450);
 	scene.lock()->Add(go);
-
-	pPlayerTwoObserver->SetScoreComponent(go->GetComponent<ScoreComponent>());
 	
 	// Player Component
 	auto player2 = std::make_shared<GameObject>();
-	player2->AddComponent<SubjectComponent>(make_shared<SubjectComponent>(player2));
-	player2->GetComponent<SubjectComponent>().lock()->AddObserver(pPlayerTwoObserver);
 	player2->AddComponent<PlayerComponent>(make_shared<PlayerComponent>(player2, lives));
 	player2->AddComponent<ImageComponent>(make_shared<ImageComponent>(player2, "Coily.png"));
 	player2->SetPosition(160, 430);

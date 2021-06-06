@@ -147,9 +147,6 @@
     <ClInclude Include="Observer.h">
       <Filter>Observer</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerObserver.h">
-      <Filter>Observer</Filter>
-    </ClInclude>
     <ClInclude Include="LivesComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
@@ -259,9 +256,6 @@
     </ClCompile>
     <ClCompile Include="SubjectComponent.cpp">
       <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerObserver.cpp">
-      <Filter>Observer</Filter>
     </ClCompile>
     <ClCompile Include="LivesComponent.cpp">
       <Filter>Components</Filter>

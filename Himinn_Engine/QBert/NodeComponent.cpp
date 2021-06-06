@@ -1,10 +1,15 @@
 #include "NodeComponent.h"
 
 #include <iostream>
+
+#include "EnemyComponent.h"
 #include "GameObject.h"
 #include "ImageComponent.h"
 #include "NodeObserver.h"
 #include "SubjectComponent.h"
+#include "QBertComponent.h"
+
+class SlickAndSamComponent;
 
 NodeComponent::NodeComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::vector<std::string>& textures, Himinn::IVector2 playerOffset, unsigned int startLevel, bool cycleLevels)
 	: Component(owner)
@@ -12,6 +17,8 @@ NodeComponent::NodeComponent(const std::weak_ptr<Himinn::GameObject>& owner, con
 	, m_PlayerOffset(playerOffset)
 	, m_NodeLevel(0)
 	, m_TexturePaths(textures)
+	, m_QBerts()
+	, m_Enemies()
 	, m_pImageComponent()
 	, m_pSubjectComponent()
 {
@@ -117,17 +124,51 @@ void NodeComponent::SetNeighbor(std::weak_ptr<NodeComponent> nodeComponent, Himi
 	}
 }
 
+void NodeComponent::AddGameObject(std::weak_ptr<Himinn::GameObject> object)
+{
+	if (object.expired())
+		return;
+
+	if (object.lock()->GetComponent<QBertComponent>().expired())
+		m_Enemies.push_back(object);
+	else
+		m_QBerts.push_back(object);
+
+	if (!m_QBerts.empty()
+		&& !m_Enemies.empty())
+		CheckOverlaps();
+}
+
+void NodeComponent::RemoveGameObject(std::weak_ptr<Himinn::GameObject> object)
+{
+	m_QBerts.erase(std::remove_if(m_QBerts.begin(), m_QBerts.end(), [object](std::weak_ptr<Himinn::GameObject> rhs)
+		{
+			return (object.lock() == rhs.lock());
+		}), m_QBerts.end());
+	
+	m_Enemies.erase(std::remove_if(m_Enemies.begin(), m_Enemies.end(), [object](std::weak_ptr<Himinn::GameObject> rhs)
+		{
+			return (object.lock() == rhs.lock());
+		}), m_Enemies.end());
+}
+
 void NodeComponent::SetNodeLevel(unsigned level)
 {
 	if (level >= 0
 		&& level < m_TexturePaths.size())
 	{
+		if (!m_pSubjectComponent.expired())
+		{
+			if (level == m_TexturePaths.size() - 1)
+				m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
+
+			if (m_NodeLevel == m_TexturePaths.size() - 1
+				&& level != m_NodeLevel)
+				m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeNotReady);
+		}
+		
 		m_NodeLevel = level;
 		SetTexture();
-
-		if (m_NodeLevel == m_TexturePaths.size() - 1
-			&& !m_pSubjectComponent.expired())
-			m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
 	}
 }
 
@@ -137,4 +178,26 @@ void NodeComponent::SetTexture()
 		return;
 
 	m_pImageComponent.lock()->SetTexture(m_TexturePaths.at(m_NodeLevel));
+}
+
+void NodeComponent::CheckOverlaps()
+{
+	for (auto qbert : m_QBerts)
+	{
+		if (qbert.expired())
+			continue;
+		
+		for (auto enemy : m_Enemies)
+		{
+			if (enemy.expired())
+				continue;
+			
+			auto enemyComp = enemy.lock()->GetComponent<EnemyComponent>();
+			if (!enemyComp.expired())
+			{
+				if (qbert.lock()->GetTransform().GetPosition() == enemy.lock()->GetTransform().GetPosition())
+					enemyComp.lock()->OnOverlap();
+			}
+		}
+	}
 }

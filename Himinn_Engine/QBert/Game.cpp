@@ -31,6 +31,8 @@
 #include "PlayerManagerComponent.h"
 #include "LevelManagerComponent.h"
 #include "ManagerObserver.h"
+#include "SlickAndSamComponent.h"
+#include "UggAndWrongwayComponent.h"
 
 Game::Game()
 	: Minigin()
@@ -39,6 +41,8 @@ Game::Game()
 	, m_LevelManagerComponent(std::make_shared<LevelManagerComponent>(m_ManagerObject))
 	, m_PlayerManagerComponent(std::make_shared<PlayerManagerComponent>(m_ManagerObject))
 {
+	srand(unsigned(time(nullptr)));
+	
 	m_ManagerObserver->SetLevelManager(m_LevelManagerComponent);
 	m_ManagerObserver->SetPlayerManager(m_PlayerManagerComponent);
 
@@ -51,10 +55,23 @@ Game::Game()
 
 void Game::LoadGame()
 {
-	m_PlayerManagerComponent->SetGameMode(GameMode::Coop);
+	//m_PlayerManagerComponent->SetGameMode(GameMode::Coop);
 	m_LevelManagerComponent->AddLevel("Level1", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt");
 	m_LevelManagerComponent->AddLevel("Level2", "../Data/QBert/LevelSettings/LevelSettings_Level2.txt");
 	m_LevelManagerComponent->AddLevel("Level3", "../Data/QBert/LevelSettings/LevelSettings_Level3.txt");
+
+	auto go = std::make_shared<Himinn::GameObject>();
+	auto ssComp = std::make_shared<SlickAndSamComponent>(go, m_LevelManagerComponent->GetGrid(0), 0.8f);
+	go->AddComponent<SlickAndSamComponent>(ssComp);
+	m_LevelManagerComponent->GetLevel("Level1").lock()->Add(go);
+
+	go = std::make_shared<Himinn::GameObject>();
+	auto uwComp = std::make_shared<UggAndWrongwayComponent>(go, m_LevelManagerComponent->GetGrid(0), 0.8f);
+	go->AddComponent<UggAndWrongwayComponent>(uwComp);
+	m_LevelManagerComponent->GetLevel("Level1").lock()->Add(go);
+	
+	ssComp->Spawn();
+	uwComp->Spawn();
 	
 	// SoundService
 	Himinn::SoundServiceLocator::RegisterSoundSystem(new Himinn::SoundLogger(new Himinn::SDLSoundSytem()));
@@ -71,48 +88,4 @@ void Game::LoadGame()
 void Game::Cleanup()
 {
 	Minigin::Cleanup();
-}
-
-void Game::LoadLevel1()
-{
-	//auto levelObject{ make_shared<Himinn::GameObject>() };
-	//auto levelComp{ make_shared<LevelManagerComponent>(levelObject, scene, "Level2", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt" ) };
-	//levelObject->AddComponent<LevelManagerComponent>(levelComp);
-	//
-	//m_PlayerManagerObject->SetupManagerForLevel(levelObject, levelComp->GetGrid());
-	//levelObject->AddComponent<PlayerManagerComponent>(m_PlayerManagerObject);
-	//
-	//scene.Add(levelObject);
-	//m_Levels.push_back(levelObject);
-	//// Player Component
-	//auto player1 = std::make_shared<Himinn::GameObject>();
-	//player1->AddComponent<Himinn::SubjectComponent>(make_shared<Himinn::SubjectComponent>(player1));
-	//player1->GetComponent<Himinn::SubjectComponent>().lock()->AddObserver(pPlayerOneObserver);
-	//player1->AddComponent<CharacterComponent>(make_shared<CharacterComponent>(player1, gridComp, lives));
-	//player1->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(player1, "QBert/Characters/Character_QBert.png"));
-	//scene.Add(player1);
-}
-
-void Game::LoadLevel2()
-{
-	/*auto& scene = Himinn::SceneManager::GetInstance().CreateScene("Level2");
-	
-	auto levelObject{ make_shared<Himinn::GameObject>() };
-	auto levelComp{ make_shared<LevelManagerComponent>(levelObject, scene, "Level3", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt") };
-	levelObject->AddComponent<LevelManagerComponent>(levelComp);
-	
-	scene.Add(levelObject);
-	m_Levels.push_back(levelObject);*/
-}
-
-void Game::LoadLevel3()
-{
-	/*auto& scene = Himinn::SceneManager::GetInstance().CreateScene("Level3");
-	
-	auto levelObject{ make_shared<Himinn::GameObject>() };
-	auto levelComp{ make_shared<LevelManagerComponent>(levelObject, scene, "", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt") };
-	levelObject->AddComponent<LevelManagerComponent>(levelComp);
-	
-	scene.Add(levelObject);
-	m_Levels.push_back(levelObject);*/
 }

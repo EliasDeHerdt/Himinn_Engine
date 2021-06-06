@@ -155,6 +155,11 @@ void GridComponent::CheckLevelFinished()
 		m_pSubjectComponent.lock()->Notify({}, (unsigned)GridObserverEvent::GridCompleted);
 }
 
+unsigned GridComponent::GetLayerAmount()
+{
+	return m_NodeLayerAmount;
+}
+
 Himinn::IVector2 GridComponent::GetLeftPeakPosition()
 {
 	return {(int)m_NodeLayerAmount - 1, 0 };

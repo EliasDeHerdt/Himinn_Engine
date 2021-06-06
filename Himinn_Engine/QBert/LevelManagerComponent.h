@@ -35,6 +35,7 @@ public:
 	void AddLevel(std::string name, std::string settingsPath);
 	std::weak_ptr<Himinn::Scene> GetLevel(int level);
 	std::weak_ptr<Himinn::Scene> GetLevel(std::string name);
+	std::weak_ptr<GridComponent> GetGrid(int i);
 	void SetActiveLevel(unsigned level);
 	void SetActiveLevel(std::string name);
 

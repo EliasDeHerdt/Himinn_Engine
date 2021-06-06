@@ -18,9 +18,5 @@ private:
 	std::shared_ptr<Himinn::GameObject> m_ManagerObject;
 	std::shared_ptr<LevelManagerComponent> m_LevelManagerComponent;
 	std::shared_ptr<PlayerManagerComponent> m_PlayerManagerComponent;
-	
-	void LoadLevel1();
-	void LoadLevel2();
-	void LoadLevel3();
 };
 

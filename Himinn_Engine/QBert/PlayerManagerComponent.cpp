@@ -1,10 +1,9 @@
 #include "PlayerManagerComponent.h"
 
-
-
 #include <iostream>
 #include <SDL_pixels.h>
 #include <windows.h>
+
 #include "CharacterComponent.h"
 #include "Commands.h"
 #include "Font.h"
@@ -13,11 +12,12 @@
 #include "GridComponent.h"
 #include "InputManager.h"
 #include "LivesComponent.h"
+#include "PlayerObserver.h"
 #include "ResourceManager.h"
 #include "Scene.h"
-#include "SceneManager.h"
 #include "ScoreComponent.h"
 #include "SubjectComponent.h"
+#include "QBertComponent.h"
 
 PlayerManagerComponent::PlayerManagerComponent(const std::weak_ptr<Himinn::GameObject>& owner)
 	: Component(owner)
@@ -75,7 +75,8 @@ void PlayerManagerComponent::MovePlayersToSpawns()
 
 void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> scene, std::weak_ptr<GridComponent> grid)
 {
-	if (grid.expired())
+	if (grid.expired()
+		|| m_Owner.expired())
 		return;
 
 	m_pGridComponent = grid;
@@ -85,11 +86,7 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 		// Player 1
 		m_MaxPlayers = 1;
 		auto player{ make_shared<Himinn::GameObject>() };
-		auto characterComp = make_shared<CharacterComponent>(player, m_pGridComponent, 3);
-		player->AddComponent<CharacterComponent>(characterComp);
-		player->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(player, "QBert/Characters/Character_QBert.png"));
-
-		AddPlayer(player, { VK_PAD_Y, VK_PAD_B , VK_PAD_X , VK_PAD_A , 0, true });
+		AddPlayer(player, "QBert/Characters/Character_QBert.png", { VK_PAD_Y, VK_PAD_B , VK_PAD_X , VK_PAD_A , 0, true });
 		
 		switch (m_GameMode) {
 		case GameMode::Coop:
@@ -97,16 +94,13 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 			m_MaxPlayers = 2;
 
 			// Player 1 change spawn
-			characterComp->SetGridSpawnPosition(m_pGridComponent.lock()->GetLeftPeakPosition());
+			player->GetComponent<CharacterComponent>().lock()->SetGridSpawnPosition(m_pGridComponent.lock()->GetLeftPeakPosition());
 			
 			// Player 2
 			player = make_shared<Himinn::GameObject>();
-			characterComp = make_shared<CharacterComponent>(player, m_pGridComponent, 3);
-			player->AddComponent<CharacterComponent>(characterComp);
-			player->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(player, "QBert/Characters/Character_QBert2.png"));
-			characterComp->SetGridSpawnPosition(m_pGridComponent.lock()->GetRightPeakPosition());
-				
-			AddPlayer(player, { VK_PAD_DPAD_UP, VK_PAD_DPAD_RIGHT , VK_PAD_DPAD_LEFT , VK_PAD_DPAD_DOWN , 0, true });
+			AddPlayer(player, "QBert/Characters/Character_QBert2.png", { VK_PAD_DPAD_UP, VK_PAD_DPAD_RIGHT , VK_PAD_DPAD_LEFT , VK_PAD_DPAD_DOWN , 0, true });
+
+			player->GetComponent<CharacterComponent>().lock()->SetGridSpawnPosition(m_pGridComponent.lock()->GetRightPeakPosition());
 			//AddPlayer(player, { VK_PAD_Y, VK_PAD_B , VK_PAD_X , VK_PAD_A , 1, true });
 			break;
 		}	
@@ -141,14 +135,20 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 			default: break;
 			}
 		}
+
+		auto qbertComp = m_Players.at(i).first->GetComponent<QBertComponent>();
+		auto characterComp = m_Players.at(i).first->GetComponent<CharacterComponent>();
+		if (qbertComp.expired()
+			|| characterComp.expired())
+			continue;
 		
 		// Lives Component
 		auto go = std::make_shared<Himinn::GameObject>();
-		go->AddComponent<Himinn::LivesComponent>(make_shared<Himinn::LivesComponent>(go, m_LivesPerPlayer, font, color));
+		go->AddComponent<Himinn::LivesComponent>(make_shared<Himinn::LivesComponent>(go, qbertComp.lock()->GetLives(), font, color));
 		go->SetPosition(10, float(20 + (40 * i)));
 		scene.lock()->Add(go);
 		
-		//pPlayerOneObserver->SetLivesComponent(go->GetComponent<Himinn::LivesComponent>());
+		m_PlayerObservers.at(i)->SetLivesComponent(go->GetComponent<Himinn::LivesComponent>());
 
 		// Score Component
 		go = std::make_shared<Himinn::GameObject>();
@@ -156,9 +156,12 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 		go->SetPosition(10, float(40 +( 40 * i)));
 		scene.lock()->Add(go);
 		
-		//pPlayerOneObserver->SetScoreComponent(go->GetComponent<Himinn::ScoreComponent>());
-		
-		auto characterComp = m_Players.at(i).first->GetComponent<CharacterComponent>();
+		m_PlayerObservers.at(i)->SetScoreComponent(go->GetComponent<Himinn::ScoreComponent>());
+
+		m_PlayerObservers.at(i)->SetPlayerManangerComponent(m_Owner.lock()->GetComponent<PlayerManagerComponent>());
+
+		if (qbertComp.lock()->GetLives() == 0)
+			continue;
 		
 		characterComp.lock()->SetGrid(m_pGridComponent);
 		characterComp.lock()->MoveToSpawn();
@@ -167,12 +170,39 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 	}
 }
 
-void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& player, PlayerControls controls)
+void PlayerManagerComponent::PlayerDied()
 {
-	if (!player->GetComponent<CharacterComponent>().lock()
-		|| m_Players.size() == m_MaxPlayers)
-		return;
+	for (int i = 0; i < m_Players.size(); ++i)
+	{
+		auto qbertComp = m_Players.at(i).first->GetComponent<QBertComponent>();
+		if (qbertComp.expired())
+			continue;
+		
+		if (qbertComp.lock()->GetLives() == 0)
+		{
+			m_Players.at(i).first->MarkForDestruction();
+		}
+	}
+}
 
+void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& player, std::string texturePath, PlayerControls controls)
+{
+	if ( m_Players.size() == m_MaxPlayers)
+		return;
+	
+	auto subjectComp = std::make_shared<Himinn::SubjectComponent>(player);
+	player->AddComponent<Himinn::SubjectComponent>(subjectComp);
+
+	auto observer = std::make_shared<PlayerObserver>();
+	subjectComp->AddObserver(observer);
+
+	auto qbertComp = std::make_shared<QBertComponent>(player, m_LivesPerPlayer, texturePath);
+	player->AddComponent<QBertComponent>(qbertComp);
+	
+	auto characterComp = std::make_shared<CharacterComponent>(player, m_pGridComponent);
+	player->AddComponent<CharacterComponent>(characterComp);
+	
+	m_PlayerObservers.push_back(observer);
 	m_Players.push_back(make_pair(player, controls));
 	
 	Himinn::InputManager& inputManager = Himinn::InputManager::GetInstance();

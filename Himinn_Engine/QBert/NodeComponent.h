@@ -33,7 +33,9 @@ public:
 	void IncrementNodeLevel();
 	void SetNodeLevel(unsigned int level);
 	void SetNeighbor(std::weak_ptr<NodeComponent> nodeComponent, Himinn::QBertDirection direction);
-
+	void AddGameObject(std::weak_ptr<Himinn::GameObject> object);
+	void RemoveGameObject(std::weak_ptr<Himinn::GameObject> object);
+ 
 private:
 	bool m_CycleLevels;
 	unsigned int m_NodeLevel;
@@ -45,10 +47,14 @@ private:
 	std::weak_ptr<NodeComponent> m_pBottomLeftNeighbor;
 	std::weak_ptr<NodeComponent> m_pBottomRightNeighbor;
 	
+	std::vector<std::weak_ptr<Himinn::GameObject>> m_QBerts;
+	std::vector<std::weak_ptr<Himinn::GameObject>> m_Enemies;
+	
 	// Components
 	std::weak_ptr<Himinn::ImageComponent> m_pImageComponent;
 	std::weak_ptr<Himinn::SubjectComponent> m_pSubjectComponent;
 
 	void SetTexture();
+	void CheckOverlaps();
 };
 
