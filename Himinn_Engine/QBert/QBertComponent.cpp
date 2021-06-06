@@ -11,7 +11,7 @@
 
 QBertComponent::QBertComponent(const std::weak_ptr<Himinn::GameObject>& owner, int lives, std::string TexturePath)
 	: Component(owner)
-	, ControllableComponent(true)
+	, ControllableComponent()
 	, m_Lives(lives)
 	, m_Score()
 	, m_TexturePath(TexturePath)

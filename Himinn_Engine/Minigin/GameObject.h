@@ -33,7 +33,7 @@ namespace Himinn
 
 		template<typename T>
 		typename std::enable_if<std::is_base_of<Component, T>::value, bool>::type
-		AddComponent(weak_ptr<Component> component)
+		AddComponent(weak_ptr<T> component)
 		{
 			if (component.expired()
 				|| component.use_count() != 1

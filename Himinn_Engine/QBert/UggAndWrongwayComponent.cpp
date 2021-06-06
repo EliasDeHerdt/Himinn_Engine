@@ -137,3 +137,37 @@ void UggAndWrongwayComponent::Move()
 	default: break;
 	}
 }
+
+bool UggAndWrongwayComponent::CheckValidMove() const
+{
+	if (m_pGridComponent.expired())
+		return false;
+	
+	Himinn::IVector2 nodeCharacterPosition = m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y);
+
+	bool destroy{ false };
+	if (nodeCharacterPosition.x == -1
+		|| nodeCharacterPosition.y == -1)
+		destroy = true;
+
+	switch (m_TypeToSpawn) {
+	case SpawnType::Ugg:
+		if (m_GridPosition.y == 0)
+			destroy = true;
+		break;
+	case SpawnType::Wrongway:
+		if (m_GridPosition.y == m_GridPosition.x)
+			destroy = true;
+		break;
+	default: 
+		destroy = true;
+		break;
+	}
+
+	if (destroy)
+	{
+		m_Owner.lock()->MarkForDestruction();
+		return false;
+	}
+	return true;
+}

@@ -54,6 +54,12 @@ void LevelManagerComponent::OnAddedToObject()
 
 void LevelManagerComponent::StartGame()
 {
+	auto scene = m_LevelScenes.at(m_ActiveLevel);
+	if (m_Owner.expired()
+		|| scene.expired())
+		return;
+	
+	scene.lock()->Add(m_Owner.lock());
 	NotifyObserver();
 }
 
@@ -161,7 +167,13 @@ void LevelManagerComponent::SetActiveLevel(std::string name)
 
 void LevelManagerComponent::TransferLevel()
 {
-	Himinn::SceneManager::GetInstance().SetActiveScene(m_LevelScenes.at(m_ActiveLevel).lock()->GetName());
+	auto scene = m_LevelScenes.at(m_ActiveLevel);
+	if (m_Owner.expired()
+		|| scene.expired())
+		return;
+	
+	Himinn::SceneManager::GetInstance().SetActiveScene(scene.lock()->GetName());
+	scene.lock()->Add(m_Owner.lock());
 }
 
 void LevelManagerComponent::NotifyObserver()

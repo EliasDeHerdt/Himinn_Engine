@@ -28,6 +28,9 @@
 #include "SoundLogger.h"
 #include "SDLSoundSytem.h"
 #include "Command.h"
+#include "imgui.h"
+#include "imgui_impl_opengl2.h"
+#include "imgui_impl_sdl.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -191,6 +194,11 @@ void Himinn::Minigin::Cleanup()
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	SDL_Quit();
+}
+
+void Himinn::Minigin::UIRender()
+{
+	;
 }
 
 void Himinn::Minigin::Run()

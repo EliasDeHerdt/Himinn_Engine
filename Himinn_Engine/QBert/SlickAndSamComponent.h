@@ -37,5 +37,6 @@ private:
 	};
 
 	void Move();
+	void AddToNode() const override;
 };
 

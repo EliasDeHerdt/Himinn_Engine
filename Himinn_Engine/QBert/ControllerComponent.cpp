@@ -14,11 +14,14 @@ ControllerComponent::ControllerComponent(const std::weak_ptr<Himinn::GameObject>
 	: Component(owner)
 	, m_GridPosition()
 	, m_GridSpawnPosition()
-	, m_Active(true)
+	, m_EnableMovement(true)
+	, m_OnLift(false)
 	, m_CanMove(true)
-	, m_CanUpdateNodes(false)
+	, m_IsQbert(false)
 	, m_MovementTimer()
 	, m_MovementDelay(0.3f)
+	, m_LiftTimer()
+	, m_LiftDelay(2.f)
 	, m_pGridComponent(grid)
 {
 	if (m_pGridComponent.expired())
@@ -33,18 +36,30 @@ void ControllerComponent::FixedUpdate()
 
 void ControllerComponent::Update()
 {
-	if (!m_Active)
+	float dt = Himinn::GameTime::GetInstance().GetDeltaTime();
+	
+	if (!m_EnableMovement)
 		return;
 	
 	if (!m_CanMove)
 	{
-		float dt = Himinn::GameTime::GetInstance().GetDeltaTime();
-		
 		m_MovementTimer += dt;
 		if (m_MovementTimer >= m_MovementDelay)
 		{
 			m_CanMove = true;
-			m_MovementTimer -= m_MovementDelay;
+			m_MovementTimer = 0;
+		}
+	}
+	
+	if (m_OnLift)
+	{
+		m_LiftTimer += dt;
+		if (m_LiftTimer >= m_LiftDelay)
+		{
+			m_OnLift = false;
+			m_LiftTimer = 0;
+			m_GridPosition = { 0, 0 };
+			m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
 		}
 	}
 }
@@ -68,22 +83,21 @@ void ControllerComponent::OnAddedToObject()
 	else
 	{
 		m_pControllableComponent = controllableComp;
-		m_CanUpdateNodes = m_pControllableComponent.lock()->CanUpdateNodes();
+		m_IsQbert = !m_Owner.lock()->GetComponent<QBertComponent>().expired();
 	}
 }
 
 void ControllerComponent::Move(Himinn::QBertDirection direction)
 {
-	if (!m_Active
+	if (!m_EnableMovement
 		|| !m_CanMove
+		|| m_OnLift
 		|| m_pGridComponent.expired())
 		return;
 
 	m_CanMove = false;
 	bool madeMove{ false };
 	Himinn::IVector2 position{ GetGridPosition() };
-	RemoveFromNode();
-	
 	switch (direction) {
 		case Himinn::QBertDirection::TopLeft:
 			madeMove = SetGridPosition(position.x - 1, position.y - 1);
@@ -102,26 +116,26 @@ void ControllerComponent::Move(Himinn::QBertDirection direction)
 	if (!madeMove)
 	{
 		// If the life check succeeds, the player goes up WITHOUT losing a life.
-		if (!m_pGridComponent.lock()->CheckForLift(m_GridPosition.x, m_GridPosition.y))
+		if (!m_IsQbert
+			|| !m_pGridComponent.lock()->CheckForLift(m_GridPosition.x, m_GridPosition.y))
 		{
 			Die();
 		}
 		else
-		{
-			m_GridPosition = { 0, 0 };
-			SetGridPosition(m_GridPosition.x, m_GridPosition.y);
-		}
+			m_OnLift = true;
 		
 		return;
 	}
 
-	if (m_CanUpdateNodes)
+	if (m_IsQbert)
 		m_pGridComponent.lock()->UpgradeNode(m_GridPosition.x, m_GridPosition.y);
 }
 
 void ControllerComponent::MoveToSpawn()
 {
+	//Extra AddToNode for safety
 	SetGridPosition(m_GridSpawnPosition);
+	AddToNode();
 }
 
 void ControllerComponent::Die()
@@ -131,7 +145,7 @@ void ControllerComponent::Die()
 	
 	m_pControllableComponent.lock()->OnDeath();
 	
-	m_GridPosition = { 0, 0 };
+	m_GridPosition = m_GridSpawnPosition;
 	SetGridPosition(m_GridPosition.x, m_GridPosition.y);
 }
 
@@ -143,9 +157,9 @@ void ControllerComponent::GainScore(int score)
 	m_pControllableComponent.lock()->OnScore(score);
 }
 
-void ControllerComponent::SetIsActive(bool state)
+void ControllerComponent::SetEnableMovement(bool state)
 {
-	m_Active = state;
+	m_EnableMovement = state;
 }
 
 void ControllerComponent::SetGrid(const std::weak_ptr<GridComponent>& grid)
@@ -162,6 +176,11 @@ bool ControllerComponent::SetGridPosition(Himinn::IVector2 position)
 {
 	if (m_pGridComponent.expired())
 		return false;
+
+	bool samePos = (m_GridPosition == position);
+
+	if (!samePos)
+		RemoveFromNode();
 	
 	m_GridPosition = position;
 	Himinn::IVector2 nodeCharacterPosition = m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y);
@@ -171,7 +190,10 @@ bool ControllerComponent::SetGridPosition(Himinn::IVector2 position)
 		return false;
 
 	m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
-	AddToNode();
+
+	if (!samePos)
+		AddToNode();
+
 	return true;
 }
 

@@ -22,11 +22,20 @@
     <Filter Include="Commands">
       <UniqueIdentifier>{44b2a487-fa33-4f12-b6eb-5e0a30660e4d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Managers">
-      <UniqueIdentifier>{0a7ed76a-8090-403d-893d-1686a4ae78f0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Observers">
       <UniqueIdentifier>{0664ff85-9cb7-4fae-aa5e-8cc20a79d664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Managers">
+      <UniqueIdentifier>{677a3b31-4b2c-44e2-91b4-19dbb7ee8e36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Bases">
+      <UniqueIdentifier>{511c57ce-71a9-4135-8f01-ec93bed792be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Characters">
+      <UniqueIdentifier>{c2ade776-1557-4c56-931a-0b127718271c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\UI">
+      <UniqueIdentifier>{28691678-2863-43b7-9760-60decbdc6916}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -54,17 +63,8 @@
     <ClCompile Include="NodeObserver.cpp">
       <Filter>Observers</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
     <ClCompile Include="GridObserver.cpp">
       <Filter>Observers</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelManagerComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerManagerComponent.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="ManagerObserver.cpp">
       <Filter>Observers</Filter>
@@ -72,20 +72,32 @@
     <ClCompile Include="PlayerObserver.cpp">
       <Filter>Observers</Filter>
     </ClCompile>
-    <ClCompile Include="SlickAndSamComponent.cpp">
-      <Filter>Components</Filter>
+    <ClCompile Include="PlayerManagerComponent.cpp">
+      <Filter>Components\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="QBertComponent.cpp">
-      <Filter>Components</Filter>
+    <ClCompile Include="LevelManagerComponent.cpp">
+      <Filter>Components\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="UggAndWrongwayComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="CoilyComponent.cpp">
-      <Filter>Components</Filter>
+    <ClCompile Include="EnemyManagerComponent.cpp">
+      <Filter>Components\Managers</Filter>
     </ClCompile>
     <ClCompile Include="EnemyComponent.cpp">
-      <Filter>Components</Filter>
+      <Filter>Components\Bases</Filter>
+    </ClCompile>
+    <ClCompile Include="CoilyComponent.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="QBertComponent.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="SlickAndSamComponent.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="UggAndWrongwayComponent.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="UIComponent.cpp">
+      <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,17 +122,8 @@
     <ClInclude Include="NodeObserver.h">
       <Filter>Observers</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyManager.h">
-      <Filter>Managers</Filter>
-    </ClInclude>
     <ClInclude Include="GridObserver.h">
       <Filter>Observers</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelManagerComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerManagerComponent.h">
-      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="ManagerObserver.h">
       <Filter>Observers</Filter>
@@ -128,23 +131,35 @@
     <ClInclude Include="PlayerObserver.h">
       <Filter>Observers</Filter>
     </ClInclude>
-    <ClInclude Include="SlickAndSamComponent.h">
-      <Filter>Components</Filter>
+    <ClInclude Include="PlayerManagerComponent.h">
+      <Filter>Components\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="QBertComponent.h">
-      <Filter>Components</Filter>
+    <ClInclude Include="LevelManagerComponent.h">
+      <Filter>Components\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManagerComponent.h">
+      <Filter>Components\Managers</Filter>
     </ClInclude>
     <ClInclude Include="EnemyComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="UggAndWrongwayComponent.h">
-      <Filter>Components</Filter>
+      <Filter>Components\Bases</Filter>
     </ClInclude>
     <ClInclude Include="ControllableComponent.h">
-      <Filter>Components</Filter>
+      <Filter>Components\Bases</Filter>
     </ClInclude>
     <ClInclude Include="CoilyComponent.h">
-      <Filter>Components</Filter>
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="QBertComponent.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="SlickAndSamComponent.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="UggAndWrongwayComponent.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="UIComponent.h">
+      <Filter>Components\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

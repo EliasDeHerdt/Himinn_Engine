@@ -38,8 +38,8 @@ protected:
 	std::weak_ptr<GridComponent> m_pGridComponent;
 	std::weak_ptr<Himinn::ImageComponent> m_pImageComponent;
 	
-	void AddToNode() const;
-	void RemoveFromNode() const;
-	bool CheckValidMove() const;
+	virtual void AddToNode() const;
+	virtual void RemoveFromNode() const;
+	virtual bool CheckValidMove() const;
 };
 

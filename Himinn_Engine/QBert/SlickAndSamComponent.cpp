@@ -127,3 +127,20 @@ void SlickAndSamComponent::Move()
 		default: break;
 	}
 }
+
+void SlickAndSamComponent::AddToNode() const
+{
+	if (m_Owner.expired())
+		return;
+
+	auto nodeObject = m_pGridComponent.lock()->GetNode(m_GridPosition.x, m_GridPosition.y);
+	if (nodeObject.expired())
+		return;
+
+	auto nodeComp = nodeObject.lock()->GetComponent<NodeComponent>();
+	if (nodeComp.expired())
+		return;
+
+	nodeComp.lock()->AddGameObject(m_Owner);
+	nodeComp.lock()->SetNodeLevel(0);
+}

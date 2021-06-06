@@ -32,7 +32,7 @@ public:
 	void Die();
 	void GainScore(int score);
 	
-	void SetIsActive(bool state);
+	void SetEnableMovement(bool state);
 	void SetGrid(const std::weak_ptr<GridComponent>& grid);
 	bool SetGridPosition(int layer, int number);
 	bool SetGridPosition(Himinn::IVector2 position);
@@ -45,11 +45,14 @@ private:
 	Himinn::IVector2 m_GridSpawnPosition;
 
 	// Movement
-	bool m_Active;
+	bool m_OnLift;
 	bool m_CanMove;
-	bool m_CanUpdateNodes;
+	bool m_IsQbert;
+	bool m_EnableMovement;
 	float m_MovementTimer;
 	float m_MovementDelay;
+	float m_LiftTimer;
+	float m_LiftDelay;
 
 	// Components
 	std::weak_ptr<GridComponent> m_pGridComponent;

@@ -8,13 +8,18 @@
 #include "GridComponent.h"
 #include "ImageComponent.h"
 
-CoilyComponent::CoilyComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid, float moveDelay)
+CoilyComponent::CoilyComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid, const std::vector<std::weak_ptr<ControllerComponent>>& players, float moveDelay)
 	: Component(owner)
 	, EnemyComponent(grid, moveDelay, 500)
 	, ControllableComponent()
 	, m_Snake(false)
+	, m_IsControlled(false)
+	, m_TargetID()
+	, m_Target()
+	, m_Players(players)
 	, m_pControllerComponent()
 {
+	m_TargetID = rand() % (int)m_Players.size();
 }
 
 void CoilyComponent::FixedUpdate()
@@ -31,7 +36,7 @@ void CoilyComponent::Update()
 	m_MoveTime += dt;
 	if (m_MoveTime >= m_MoveDelay)
 	{
-		m_MoveTime -= m_MoveDelay;
+		m_MoveTime = 0.f;
 		Move();
 	}
 }
@@ -65,6 +70,10 @@ void CoilyComponent::OnAddedToObject()
 
 void CoilyComponent::OnDeath()
 {
+	if (m_Owner.expired())
+		return;
+
+	m_Owner.lock()->MarkForDestruction();
 }
 
 void CoilyComponent::OnScore(int)
@@ -73,7 +82,7 @@ void CoilyComponent::OnScore(int)
 
 void CoilyComponent::OnOverlap(std::weak_ptr<Himinn::GameObject> other)
 {
-	/*if (m_Owner.expired()
+	if (m_Owner.expired()
 		|| other.expired())
 		return;
 
@@ -81,7 +90,7 @@ void CoilyComponent::OnOverlap(std::weak_ptr<Himinn::GameObject> other)
 	if (controllerComp.expired())
 		return;
 
-	controllerComp.lock()->Die();*/
+	controllerComp.lock()->Die();
 }
 
 void CoilyComponent::Spawn()
@@ -102,7 +111,7 @@ bool CoilyComponent::SetControllerComponent(std::weak_ptr<ControllerComponent> c
 		return false;
 
 	m_pControllerComponent = controllerComp;
-	m_pControllerComponent.lock()->SetIsActive(false);
+	m_pControllerComponent.lock()->SetEnableMovement(false);
 	return true;
 }
 
@@ -146,7 +155,27 @@ void CoilyComponent::Move()
 	}
 	else if (m_pControllerComponent.expired())
 	{
+		if (!UpdateTarget())
+			return;
 		
+		if (m_GridPosition.x >= m_Target.x)
+		{
+			--m_GridPosition.x;
+			if (m_GridPosition.y > m_Target.y)
+				--m_GridPosition.y;
+		}
+		else
+		{
+			++m_GridPosition.x;
+			if (m_GridPosition.y < m_Target.y)
+				++m_GridPosition.y;
+		}
+
+		if (CheckValidMove())
+		{
+			m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
+			AddToNode();
+		}
 	}
 }
 
@@ -163,6 +192,18 @@ void CoilyComponent::CheckForHatch()
 	if (m_pControllerComponent.expired())
 		return;
 
-	m_pControllerComponent.lock()->SetIsActive(true);
+	m_pControllerComponent.lock()->SetEnableMovement(true);
 	m_pControllerComponent.lock()->SetGridPosition(m_GridPosition);
+}
+
+bool CoilyComponent::UpdateTarget()
+{
+	if (m_Players.empty())
+		return false;
+	
+	if (m_Players.at(m_TargetID).expired())
+		return false;
+		
+	m_Target = m_Players.at(m_TargetID).lock()->GetGridPosition();
+	return true;
 }

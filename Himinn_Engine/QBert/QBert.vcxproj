@@ -178,7 +178,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="CoilyComponent.cpp" />
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="EnemyComponent.cpp" />
-    <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="EnemyManagerComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GridComponent.cpp" />
     <ClCompile Include="GridObserver.cpp" />
@@ -194,13 +194,14 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="QBertComponent.cpp" />
     <ClCompile Include="SlickAndSamComponent.cpp" />
     <ClCompile Include="UggAndWrongwayComponent.cpp" />
+    <ClCompile Include="UIComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoilyComponent.h" />
     <ClInclude Include="Commands.h" />
     <ClInclude Include="ControllableComponent.h" />
     <ClInclude Include="EnemyComponent.h" />
-    <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="EnemyManagerComponent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GridComponent.h" />
     <ClInclude Include="GridObserver.h" />
@@ -215,6 +216,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="QBertComponent.h" />
     <ClInclude Include="SlickAndSamComponent.h" />
     <ClInclude Include="UggAndWrongwayComponent.h" />
+    <ClInclude Include="UIComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "ControllableComponent.h"
 #include "DataTypes.h"
 #include "EnemyComponent.h"
@@ -13,7 +15,7 @@ class GridComponent;
 class CoilyComponent final : public EnemyComponent, public ControllableComponent
 {
 public:
-	CoilyComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid, float moveDelay);
+	CoilyComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid, const std::vector<std::weak_ptr<ControllerComponent>>& players, float moveDelay);
 	virtual ~CoilyComponent() override = default;
 	CoilyComponent(const CoilyComponent& other) = delete;
 	CoilyComponent& operator=(const CoilyComponent& other) = delete;
@@ -37,8 +39,13 @@ private:
 	bool m_Snake;
 	bool m_IsControlled;
 
+	int m_TargetID;
+	Himinn::IVector2 m_Target;
+	const std::vector<std::weak_ptr<ControllerComponent>> m_Players;
+
 	std::weak_ptr<ControllerComponent> m_pControllerComponent;
 	
 	void Move();
 	void CheckForHatch();
+	bool UpdateTarget();
 };

@@ -4,7 +4,7 @@
 class ControllableComponent : public virtual Himinn::Component
 {
 public:
-	ControllableComponent(bool canUpdateNodes = false) : m_CanUpdateNodes(canUpdateNodes) {};
+	ControllableComponent(){};
 	virtual ~ControllableComponent() override = default;
 	ControllableComponent(const ControllableComponent& other) = delete;
 	ControllableComponent& operator=(const ControllableComponent& other) = delete;
@@ -19,9 +19,4 @@ public:
 
 	virtual void OnDeath() = 0;
 	virtual void OnScore(int amount) = 0;
-
-	bool CanUpdateNodes() const { return m_CanUpdateNodes; }
-	
-protected:
-	bool m_CanUpdateNodes;
 };

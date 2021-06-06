@@ -134,9 +134,25 @@ void NodeComponent::AddGameObject(std::weak_ptr<Himinn::GameObject> object)
 		return;
 
 	if (object.lock()->GetComponent<QBertComponent>().expired())
-		m_Enemies.push_back(object);
+	{
+		if (std::find_if(m_Enemies.begin(), m_Enemies.end(), [object](std::weak_ptr<Himinn::GameObject> rhs)
+			{
+				return object.lock() == rhs.lock();
+			}) == m_Enemies.end())
+		{
+			m_Enemies.push_back(object);
+		}
+	}
 	else
-		m_QBerts.push_back(object);
+	{
+		if (std::find_if(m_QBerts.begin(), m_QBerts.end(), [object](std::weak_ptr<Himinn::GameObject> rhs)
+		{
+				return object.lock() == rhs.lock();
+		}) == m_QBerts.end())
+		{
+			m_QBerts.push_back(object);
+		}
+	}
 
 	if (!m_QBerts.empty()
 		&& !m_Enemies.empty())
@@ -208,6 +224,9 @@ void NodeComponent::CheckOverlaps()
 
 void NodeComponent::GrantScore()
 {
+	if (m_QBerts.empty())
+		return;
+	
 	auto player = m_QBerts.back();
 	if (player.expired())
 		return;

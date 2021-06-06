@@ -58,15 +58,12 @@
     <Filter Include="SoundSystem\Decorators">
       <UniqueIdentifier>{d20e2b3b-0361-43e7-8d7b-53cdbe1c6bb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Singletons\Renderer">
+      <UniqueIdentifier>{7925f96a-982d-42d2-bdfb-be7d775b2f68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MiniginPCH.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Singleton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture2D.h">
@@ -177,12 +174,15 @@
     <ClInclude Include="..\3rdParty\Simple_SDL2_Audio\audio.h">
       <Filter>SimpleSDLAudio</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Singletons\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Singletons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
@@ -280,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="..\3rdParty\Simple_SDL2_Audio\audio.c">
       <Filter>SimpleSDLAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Singletons\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

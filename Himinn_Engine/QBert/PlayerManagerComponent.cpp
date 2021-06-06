@@ -12,6 +12,7 @@
 #include "GridComponent.h"
 #include "InputManager.h"
 #include "LivesComponent.h"
+#include "ManagerObserver.h"
 #include "PlayerObserver.h"
 #include "ResourceManager.h"
 #include "Scene.h"
@@ -75,8 +76,8 @@ void PlayerManagerComponent::MovePlayersToSpawns()
 
 void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> scene, std::weak_ptr<GridComponent> grid)
 {
-	if (grid.expired()
-		|| m_Owner.expired())
+	if (m_Owner.expired()
+		|| grid.expired())
 		return;
 
 	m_pGridComponent = grid;
@@ -168,6 +169,15 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 
 		scene.lock()->Add(m_Players.at(i).first);
 	}
+
+	if (m_SubjectComponent.expired())
+		return;
+
+	Himinn::EventInfo info{};
+	for (auto player : m_Players)
+		info.pointerInfo.push_back(player.first->GetComponent<ControllerComponent>());
+	
+	m_SubjectComponent.lock()->Notify(info, (unsigned)ManagerObserverEvent::PassingPlayers);
 }
 
 void PlayerManagerComponent::PlayerDied()
@@ -183,6 +193,11 @@ void PlayerManagerComponent::PlayerDied()
 			m_Players.at(i).first->MarkForDestruction();
 		}
 	}
+
+	if (m_SubjectComponent.expired())
+		return;
+
+	m_SubjectComponent.lock()->Notify({}, (unsigned)ManagerObserverEvent::ClearEnemies);
 }
 
 void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& player, std::string texturePath, PlayerControls controls)

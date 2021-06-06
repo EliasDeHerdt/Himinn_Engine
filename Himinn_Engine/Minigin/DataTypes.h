@@ -6,6 +6,11 @@ namespace Himinn
 	{
 		int x, y;
 
+		bool operator==(const IVector2& rhs) const
+		{
+			return (x == rhs.x && y == rhs.y);
+		}
+		
 		bool operator!=(const IVector2& rhs) const
 		{
 			return (x != rhs.x || y != rhs.y);
