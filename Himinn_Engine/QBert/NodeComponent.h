@@ -56,5 +56,6 @@ private:
 
 	void SetTexture();
 	void CheckOverlaps();
+	void GrantScore();
 };
 

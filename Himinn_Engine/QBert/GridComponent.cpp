@@ -262,7 +262,7 @@ int GridComponent::GetListIndex(int layer, int number) const
 	for (int i = 1; i <= layer; ++i)
 		index += i;
 
-	if (index >= m_pNodes.size())
+	if (index >= (int)m_pNodes.size())
 		return -1;
 	
 	return (index + number);

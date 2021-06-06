@@ -42,7 +42,7 @@
     <ClCompile Include="GridComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterComponent.cpp">
+    <ClCompile Include="ControllerComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="Commands.cpp">
@@ -81,6 +81,12 @@
     <ClCompile Include="UggAndWrongwayComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="CoilyComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -92,7 +98,7 @@
     <ClInclude Include="GridComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterComponent.h">
+    <ClInclude Include="ControllerComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="Commands.h">
@@ -132,6 +138,12 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="UggAndWrongwayComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllableComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CoilyComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>

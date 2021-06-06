@@ -9,11 +9,7 @@ namespace Himinn {
 enum class PlayerObserverEvent
 {
 	PlayerDied,
-	PlayerScore,
-	PointsColorChange = 25,
-	PointsDefeatCoily = 500,
-	PointsDiscsLeft = 50,
-	PointsCatchSlickOrSam = 300
+	PlayerScore
 };
 
 class PlayerManagerComponent;

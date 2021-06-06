@@ -17,11 +17,12 @@
 #include "FPSComponent.h"
 #include "LivesComponent.h"
 #include "ScoreComponent.h"
-#include "CharacterComponent.h"
+#include "ControllerComponent.h"
 #include "SubjectComponent.h"
 
 #include "PlayerObserver.h"
 #include "AudioLibrary.h"
+#include "CoilyComponent.h"
 #include "SoundServiceLocator.h"
 #include "SoundLogger.h"
 #include "SDLSoundSytem.h"
@@ -69,9 +70,29 @@ void Game::LoadGame()
 	auto uwComp = std::make_shared<UggAndWrongwayComponent>(go, m_LevelManagerComponent->GetGrid(0), 0.8f);
 	go->AddComponent<UggAndWrongwayComponent>(uwComp);
 	m_LevelManagerComponent->GetLevel("Level1").lock()->Add(go);
+
+	go = std::make_shared<Himinn::GameObject>();
+	auto coComp = std::make_shared<CoilyComponent>(go, m_LevelManagerComponent->GetGrid(0), 0.8f);
+	go->AddComponent<UggAndWrongwayComponent>(coComp);
+	auto contComp = std::make_shared<ControllerComponent>(go, m_LevelManagerComponent->GetGrid(0));
+	go->AddComponent<UggAndWrongwayComponent>(contComp);
+	coComp->SetControllerComponent(contComp);
+	m_LevelManagerComponent->GetLevel("Level1").lock()->Add(go);
 	
 	ssComp->Spawn();
 	uwComp->Spawn();
+	coComp->Spawn();
+
+	Himinn::InputManager& inputManager = Himinn::InputManager::GetInstance();
+	inputManager.AddCommand("SnekMoveTopLeft", new MoveCommand(go, Himinn::QBertDirection::TopLeft));
+	inputManager.AddCommand("SnekTopRight", new MoveCommand(go, Himinn::QBertDirection::TopRight));
+	inputManager.AddCommand("SnekBottomLeft", new MoveCommand(go, Himinn::QBertDirection::BottomLeft));
+	inputManager.AddCommand("SnekBottomRight", new MoveCommand(go, Himinn::QBertDirection::BottomRight));
+	
+	inputManager.BindButtonInput(0, VK_PAD_DPAD_UP, "SnekMoveTopLeft");
+	inputManager.BindButtonInput(0, VK_PAD_DPAD_RIGHT, "SnekTopRight");
+	inputManager.BindButtonInput(0, VK_PAD_DPAD_LEFT, "SnekBottomLeft");
+	inputManager.BindButtonInput(0, VK_PAD_DPAD_DOWN, "SnekBottomRight");
 	
 	// SoundService
 	Himinn::SoundServiceLocator::RegisterSoundSystem(new Himinn::SoundLogger(new Himinn::SDLSoundSytem()));

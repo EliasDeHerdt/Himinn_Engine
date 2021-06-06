@@ -4,7 +4,7 @@
 #include <SDL_pixels.h>
 #include <windows.h>
 
-#include "CharacterComponent.h"
+#include "ControllerComponent.h"
 #include "Commands.h"
 #include "Font.h"
 #include "GameObject.h"
@@ -67,7 +67,7 @@ void PlayerManagerComponent::MovePlayersToSpawns()
 {
 	for (auto player : m_Players)
 	{
-		auto characterComp = player.first->GetComponent<CharacterComponent>();
+		auto characterComp = player.first->GetComponent<ControllerComponent>();
 
 		characterComp.lock()->MoveToSpawn();
 	}
@@ -94,13 +94,13 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 			m_MaxPlayers = 2;
 
 			// Player 1 change spawn
-			player->GetComponent<CharacterComponent>().lock()->SetGridSpawnPosition(m_pGridComponent.lock()->GetLeftPeakPosition());
+			player->GetComponent<ControllerComponent>().lock()->SetGridSpawnPosition(m_pGridComponent.lock()->GetLeftPeakPosition());
 			
 			// Player 2
 			player = make_shared<Himinn::GameObject>();
 			AddPlayer(player, "QBert/Characters/Character_QBert2.png", { VK_PAD_DPAD_UP, VK_PAD_DPAD_RIGHT , VK_PAD_DPAD_LEFT , VK_PAD_DPAD_DOWN , 0, true });
 
-			player->GetComponent<CharacterComponent>().lock()->SetGridSpawnPosition(m_pGridComponent.lock()->GetRightPeakPosition());
+			player->GetComponent<ControllerComponent>().lock()->SetGridSpawnPosition(m_pGridComponent.lock()->GetRightPeakPosition());
 			//AddPlayer(player, { VK_PAD_Y, VK_PAD_B , VK_PAD_X , VK_PAD_A , 1, true });
 			break;
 		}	
@@ -120,7 +120,7 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 	SDL_Color color = SDL_Color{ 255, 125, 0 };
 	std::shared_ptr<Himinn::Font> font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
 
-	for (int i = 0; i < m_Players.size(); ++i)
+	for (int i = 0; i < (int)m_Players.size(); ++i)
 	{
 		if (i > 0)
 		{
@@ -137,7 +137,7 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 		}
 
 		auto qbertComp = m_Players.at(i).first->GetComponent<QBertComponent>();
-		auto characterComp = m_Players.at(i).first->GetComponent<CharacterComponent>();
+		auto characterComp = m_Players.at(i).first->GetComponent<ControllerComponent>();
 		if (qbertComp.expired()
 			|| characterComp.expired())
 			continue;
@@ -172,7 +172,7 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 
 void PlayerManagerComponent::PlayerDied()
 {
-	for (int i = 0; i < m_Players.size(); ++i)
+	for (int i = 0; i < (int)m_Players.size(); ++i)
 	{
 		auto qbertComp = m_Players.at(i).first->GetComponent<QBertComponent>();
 		if (qbertComp.expired())
@@ -187,7 +187,7 @@ void PlayerManagerComponent::PlayerDied()
 
 void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& player, std::string texturePath, PlayerControls controls)
 {
-	if ( m_Players.size() == m_MaxPlayers)
+	if (m_MaxPlayers == (int)m_Players.size() )
 		return;
 	
 	auto subjectComp = std::make_shared<Himinn::SubjectComponent>(player);
@@ -195,12 +195,12 @@ void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& play
 
 	auto observer = std::make_shared<PlayerObserver>();
 	subjectComp->AddObserver(observer);
-
+	
 	auto qbertComp = std::make_shared<QBertComponent>(player, m_LivesPerPlayer, texturePath);
 	player->AddComponent<QBertComponent>(qbertComp);
-	
-	auto characterComp = std::make_shared<CharacterComponent>(player, m_pGridComponent);
-	player->AddComponent<CharacterComponent>(characterComp);
+
+	auto controllerComp = std::make_shared<ControllerComponent>(player, m_pGridComponent);
+	player->AddComponent<ControllerComponent>(controllerComp);
 	
 	m_PlayerObservers.push_back(observer);
 	m_Players.push_back(make_pair(player, controls));

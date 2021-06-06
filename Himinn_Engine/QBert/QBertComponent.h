@@ -1,7 +1,8 @@
 #pragma once
-#include "Component.h"
+#include "ControllableComponent.h"
 #include <memory>
 #include <string>
+
 
 namespace Himinn {
 	class SubjectComponent;
@@ -18,7 +19,7 @@ enum class ScoreGain
 };
 
 
-class QBertComponent : public Himinn::Component
+class QBertComponent : public ControllableComponent
 {
 public:
 	QBertComponent(const std::weak_ptr<Himinn::GameObject>& owner, int lives, std::string TexturePath);
@@ -34,12 +35,15 @@ public:
 	virtual void Render() override;
 	virtual void OnAddedToObject() override;
 
+	void OnDeath() override;
+	void OnScore(int amount) override;
+
 	int GetLives() const;
 	int GetScore() const;
 
 	void LoseLife();
 	void SetLives(int lives);
-	void GainScore(ScoreGain score);
+	void GainScore(int score);
 
 private:
 	int m_Lives;

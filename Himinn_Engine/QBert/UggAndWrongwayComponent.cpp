@@ -2,21 +2,19 @@
 
 #include <iostream>
 
+
+#include "ControllerComponent.h"
 #include "GameObject.h"
 #include "GameTime.h"
 #include "GridComponent.h"
 #include "ImageComponent.h"
 #include "NodeComponent.h"
+#include "ControllerComponent.h"
 
 UggAndWrongwayComponent::UggAndWrongwayComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid, float moveDelay)
-	: EnemyComponent(owner)
-	, m_Active()
-	, m_MoveTime()
-	, m_MoveDelay(moveDelay)
-	, m_TypeToSpawn()
-	, m_GridPosition()
-	, m_pGridComponent(grid)
-	, m_pImageComponent()
+	: Component(owner)
+	, EnemyComponent(grid, moveDelay, 0)
+	, m_TypeToSpawn(SpawnType::Ugg)
 {
 }
 
@@ -60,20 +58,23 @@ void UggAndWrongwayComponent::OnAddedToObject()
 	}
 	else
 	{
-		std::cout << "UggAndWrongwayComponent: No ImageComponent found, Creating one.\n";
-
 		auto newImageComponent = std::make_shared<Himinn::ImageComponent>(m_Owner, "QBert/Characters/Character_Ugg.png");
 		m_Owner.lock()->AddComponent<Himinn::ImageComponent>(newImageComponent);
 		m_pImageComponent = newImageComponent;
 	}
 }
 
-void UggAndWrongwayComponent::OnOverlap()
+void UggAndWrongwayComponent::OnOverlap(std::weak_ptr<Himinn::GameObject> other)
 {
-	if (m_Owner.expired())
+	if (m_Owner.expired()
+		|| other.expired())
 		return;
 
-	m_Owner.lock()->MarkForDestruction();
+	auto controllerComp = other.lock()->GetComponent<ControllerComponent>();
+	if (controllerComp.expired())
+		return;
+
+	controllerComp.lock()->Die();
 }
 
 void UggAndWrongwayComponent::Spawn()
@@ -135,49 +136,4 @@ void UggAndWrongwayComponent::Move()
 	}
 	default: break;
 	}
-}
-
-void UggAndWrongwayComponent::AddToNode() const
-{
-	if (m_Owner.expired())
-		return;
-
-	auto nodeObject = m_pGridComponent.lock()->GetNode(m_GridPosition.x, m_GridPosition.y);
-	if (nodeObject.expired())
-		return;
-
-	auto nodeComp = nodeObject.lock()->GetComponent<NodeComponent>();
-	if (nodeComp.expired())
-		return;
-	
-	nodeComp.lock()->AddGameObject(m_Owner);
-}
-
-void UggAndWrongwayComponent::RemoveFromNode() const
-{
-	if (m_Owner.expired())
-		return;
-
-	auto nodeObject = m_pGridComponent.lock()->GetNode(m_GridPosition.x, m_GridPosition.y);
-	if (nodeObject.expired())
-		return;
-
-	auto nodeComp = nodeObject.lock()->GetComponent<NodeComponent>();
-	if (nodeComp.expired())
-		return;
-
-	nodeComp.lock()->RemoveGameObject(m_Owner);
-}
-
-bool UggAndWrongwayComponent::CheckValidMove() const
-{
-	Himinn::IVector2 nodeCharacterPosition = m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y);
-
-	if (nodeCharacterPosition.x == -1
-		|| nodeCharacterPosition.y == -1)
-	{
-		m_Owner.lock()->MarkForDestruction();
-		return false;
-	}
-	return true;
 }

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "CharacterComponent.h"
+#include "ControllerComponent.h"
 #include "GameObject.h"
 
 // Move Command
@@ -10,7 +10,7 @@
 MoveCommand::MoveCommand(std::weak_ptr<Himinn::GameObject> gameObject, Himinn::QBertDirection direction)
 	: Command(gameObject)
 	, m_Direction(direction)
-	, m_CharacterComp(gameObject.lock()->GetComponent<CharacterComponent>())
+	, m_CharacterComp(gameObject.lock()->GetComponent<ControllerComponent>())
 {
 }
 

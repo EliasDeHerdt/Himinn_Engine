@@ -4,23 +4,22 @@
 #include "Component.h"
 #include "DataTypes.h"
 
-class QBertComponent;
-
 namespace Himinn {
 	class GameObject;
 	class SubjectComponent;
 }
 
 class GridComponent;
-class CharacterComponent : public Himinn::Component
+class ControllableComponent;
+class ControllerComponent : public Himinn::Component
 {
 public:
-	CharacterComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid);
-	virtual ~CharacterComponent() = default;
-	CharacterComponent(const CharacterComponent& other) = delete;
-	CharacterComponent& operator=(const CharacterComponent& other) = delete;
-	CharacterComponent(CharacterComponent&& other) = delete;
-	CharacterComponent& operator=(CharacterComponent&& other) = delete;
+	ControllerComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid);
+	virtual ~ControllerComponent() override = default;
+	ControllerComponent(const ControllerComponent& other) = delete;
+	ControllerComponent& operator=(const ControllerComponent& other) = delete;
+	ControllerComponent(ControllerComponent&& other) = delete;
+	ControllerComponent& operator=(ControllerComponent&& other) = delete;
 
 	virtual void FixedUpdate() override;
 	virtual void Update() override;
@@ -30,7 +29,10 @@ public:
 
 	void Move(Himinn::QBertDirection direction);
 	void MoveToSpawn();
+	void Die();
+	void GainScore(int score);
 	
+	void SetIsActive(bool state);
 	void SetGrid(const std::weak_ptr<GridComponent>& grid);
 	bool SetGridPosition(int layer, int number);
 	bool SetGridPosition(Himinn::IVector2 position);
@@ -43,13 +45,15 @@ private:
 	Himinn::IVector2 m_GridSpawnPosition;
 
 	// Movement
+	bool m_Active;
 	bool m_CanMove;
+	bool m_CanUpdateNodes;
 	float m_MovementTimer;
 	float m_MovementDelay;
 
 	// Components
 	std::weak_ptr<GridComponent> m_pGridComponent;
-	std::weak_ptr<QBertComponent> m_pQbertComponent;
+	std::weak_ptr<ControllableComponent> m_pControllableComponent;
 
 	void AddToNode();
 	void RemoveFromNode();

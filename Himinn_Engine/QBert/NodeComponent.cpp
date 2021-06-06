@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+
+#include "ControllerComponent.h"
 #include "EnemyComponent.h"
 #include "GameObject.h"
 #include "ImageComponent.h"
@@ -80,6 +82,7 @@ void NodeComponent::IncrementNodeLevel()
 		if (m_NodeLevel + 1 < m_TexturePaths.size())
 		{
 			++m_NodeLevel;
+			GrantScore();
 			if (m_NodeLevel == m_TexturePaths.size() - 1
 				&& !m_pSubjectComponent.expired())
 				m_pSubjectComponent.lock()->Notify({}, (unsigned)NodeObserverEvent::NodeReady);
@@ -97,6 +100,7 @@ void NodeComponent::IncrementNodeLevel()
 		if (m_NodeLevel + 1 < m_TexturePaths.size())
 		{
 			++m_NodeLevel;
+			GrantScore();
 			SetTexture();
 			if (m_NodeLevel == m_TexturePaths.size() - 1
 				&& !m_pSubjectComponent.expired())
@@ -196,8 +200,21 @@ void NodeComponent::CheckOverlaps()
 			if (!enemyComp.expired())
 			{
 				if (qbert.lock()->GetTransform().GetPosition() == enemy.lock()->GetTransform().GetPosition())
-					enemyComp.lock()->OnOverlap();
+					enemyComp.lock()->OnOverlap(qbert);
 			}
 		}
 	}
+}
+
+void NodeComponent::GrantScore()
+{
+	auto player = m_QBerts.back();
+	if (player.expired())
+		return;
+
+	auto controllerComp = player.lock()->GetComponent<ControllerComponent>();
+	if (controllerComp.expired())
+		return;
+
+	controllerComp.lock()->GainScore(25);
 }

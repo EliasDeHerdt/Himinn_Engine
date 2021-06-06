@@ -9,7 +9,7 @@ namespace Himinn {
 }
 
 enum class ScoreGain;
-class CharacterComponent;
+class ControllerComponent;
 
 class MoveCommand final : public Himinn::Command
 {
@@ -19,5 +19,5 @@ public:
 	void Execute() override;
 private:
 	Himinn::QBertDirection m_Direction;
-	std::weak_ptr<CharacterComponent> m_CharacterComp;
+	std::weak_ptr<ControllerComponent> m_CharacterComp;
 };

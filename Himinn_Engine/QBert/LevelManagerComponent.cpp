@@ -103,7 +103,7 @@ void LevelManagerComponent::AddLevel(std::string name, std::string settingsPath)
 std::weak_ptr<Himinn::Scene> LevelManagerComponent::GetLevel(int level)
 {
 	if (level > 0
-		&& level < m_LevelScenes.size())
+		&& level < (int)m_LevelScenes.size())
 		return m_LevelScenes.at(level);
 
 	std::cout << "LevelManagerComponent: Number " << std::to_string(level) << " doesn't exist in the list, returning empty pointer.";

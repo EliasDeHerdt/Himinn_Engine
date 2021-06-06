@@ -24,7 +24,7 @@ public:
 	virtual void Render() override;
 	virtual void OnAddedToObject() override;
 
-	virtual void OnOverlap() override;
+	virtual void OnOverlap(std::weak_ptr<Himinn::GameObject> other) override;
 
 	void Spawn();
 
@@ -34,18 +34,8 @@ private:
 		Ugg,
 		Wrongway
 	};
-
-	bool m_Active;
-	float m_MoveTime;
-	float m_MoveDelay;
+	
 	SpawnType m_TypeToSpawn;
-	Himinn::IVector2 m_GridPosition;
-
-	std::weak_ptr<GridComponent> m_pGridComponent;
-	std::weak_ptr<Himinn::ImageComponent> m_pImageComponent;
 
 	void Move();
-	void AddToNode() const;
-	void RemoveFromNode() const;
-	bool CheckValidMove() const;
 };

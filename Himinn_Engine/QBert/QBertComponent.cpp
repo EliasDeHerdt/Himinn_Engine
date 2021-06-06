@@ -11,6 +11,7 @@
 
 QBertComponent::QBertComponent(const std::weak_ptr<Himinn::GameObject>& owner, int lives, std::string TexturePath)
 	: Component(owner)
+	, ControllableComponent(true)
 	, m_Lives(lives)
 	, m_Score()
 	, m_TexturePath(TexturePath)
@@ -60,6 +61,16 @@ void QBertComponent::OnAddedToObject()
 	}
 }
 
+void QBertComponent::OnDeath()
+{
+	LoseLife();
+}
+
+void QBertComponent::OnScore(int amount)
+{
+	GainScore(amount);
+}
+
 int QBertComponent::GetLives() const
 {
 	return m_Lives;
@@ -99,10 +110,9 @@ void QBertComponent::SetLives(int lives)
 	}
 }
 
-void QBertComponent::GainScore(ScoreGain scoreGain)
+void QBertComponent::GainScore(int scoreGain)
 {
-	int score = (int)scoreGain;
-	m_Score += score;
+	m_Score += scoreGain;
 
 	if (!m_pSubjectComponent.expired())
 		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ {m_Score}, {0.f}, {""} }, (unsigned)PlayerObserverEvent::PlayerScore);
