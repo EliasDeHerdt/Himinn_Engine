@@ -4,6 +4,7 @@
 #include "PlayerManagerComponent.h"
 #include "EnemyManagerComponent.h"
 #include "GridComponent.h"
+#include "LevelManagerComponent.h"
 #include "Scene.h"
 
 void ManagerObserver::OnNotify(Himinn::EventInfo eventInfo, unsigned event)
@@ -46,6 +47,12 @@ void ManagerObserver::OnNotify(Himinn::EventInfo eventInfo, unsigned event)
 			break;
 		}
 		case (unsigned)ManagerObserverEvent::GameOver:
+			if (!m_pPlayerManager.expired())
+				m_pPlayerManager.lock()->CleanUp();
+
+			if (!m_pLevelManager.expired())
+				m_pLevelManager.lock()->CleanUp();
+
 			break;
 		default: break;
 	}

@@ -38,6 +38,7 @@ public:
 	std::weak_ptr<GridComponent> GetGrid(int i);
 	void SetActiveLevel(unsigned level);
 	void SetActiveLevel(std::string name);
+	void CleanUp();
 
 private:
 	unsigned m_ActiveLevel;

@@ -1,12 +1,16 @@
 #include "EnemyManagerComponent.h"
 
 #include <iostream>
+#include <SDL_keycode.h>
+#include <Windows.h>
 
 #include "CoilyComponent.h"
+#include "Commands.h"
 #include "ControllerComponent.h"
 #include "Scene.h"
 #include "GameObject.h"
 #include "GameTime.h"
+#include "InputManager.h"
 #include "SubjectComponent.h"
 #include "SlickAndSamComponent.h"
 #include "UggAndWrongwayComponent.h"
@@ -14,6 +18,7 @@
 EnemyManagerComponent::EnemyManagerComponent(const std::weak_ptr<Himinn::GameObject>& owner)
 	: Component(owner)
 	, m_Active(false)
+	, m_VersusMode(false)
 	, m_MinSpawnDelaySS(6.f)
 	, m_MinSpawnDelayUW(1.f)
 	, m_MaxSpawnDelay(10.f)
@@ -29,6 +34,10 @@ EnemyManagerComponent::EnemyManagerComponent(const std::weak_ptr<Himinn::GameObj
 	, m_pScene()
 	, m_pGridComponent()
 	, m_SubjectComponent()
+	, m_pCoilyTopLeftCommand()
+	, m_pCoilyTopRightCommand()
+	, m_pCoilyBottomLeftCommand()
+	, m_pCoilyBottomRightCommand()
 {
 }
 
@@ -147,6 +156,48 @@ void EnemyManagerComponent::SpawnCoily()
 	
 	auto coilyComp = std::make_shared<CoilyComponent>(go, m_pGridComponent, m_Players, m_StepDelay);
 	go->AddComponent<CoilyComponent>(coilyComp);
+
+	if (m_VersusMode)
+	{
+		auto controllerComp = std::make_shared<ControllerComponent>(go, m_pGridComponent);
+		go->AddComponent<ControllerComponent>(controllerComp);
+		coilyComp->SetControllerComponent(controllerComp);
+
+		Himinn::InputManager& inputManager = Himinn::InputManager::GetInstance();
+		if (m_pCoilyTopLeftCommand.expired()
+			|| m_pCoilyTopRightCommand.expired()
+			|| m_pCoilyBottomLeftCommand.expired()
+			|| m_pCoilyBottomRightCommand.expired())
+		{
+			auto command = std::make_shared<MoveCommand>(go, Himinn::QBertDirection::TopLeft);
+			m_pCoilyTopLeftCommand = command;
+			inputManager.AddCommand("CoilyMoveTopLeft", command);
+			
+			command = std::make_shared<MoveCommand>(go, Himinn::QBertDirection::TopRight);
+			m_pCoilyTopRightCommand = command;
+			inputManager.AddCommand("CoilyTopRight", command);
+			
+			command = std::make_shared<MoveCommand>(go, Himinn::QBertDirection::BottomLeft);
+			m_pCoilyBottomLeftCommand = command;
+			inputManager.AddCommand("CoilyBottomLeft", command);
+			
+			command = std::make_shared<MoveCommand>(go, Himinn::QBertDirection::BottomRight);
+			m_pCoilyBottomRightCommand = command;
+			inputManager.AddCommand("CoilyBottomRight", command);
+			
+			inputManager.BindButtonInput(SDLK_e, "CoilyMoveTopLeft");
+			inputManager.BindButtonInput(SDLK_r, "CoilyTopRight");
+			inputManager.BindButtonInput(SDLK_d, "CoilyBottomLeft");
+			inputManager.BindButtonInput(SDLK_f, "CoilyBottomRight");
+		}
+		else
+		{
+			m_pCoilyTopLeftCommand.lock()->SetGameObject(go);
+			m_pCoilyTopRightCommand.lock()->SetGameObject(go);
+			m_pCoilyBottomLeftCommand.lock()->SetGameObject(go);
+			m_pCoilyBottomRightCommand.lock()->SetGameObject(go);
+		}
+	}
 	
 	m_Coily = go;
 	m_pScene.lock()->Add(go);
@@ -166,6 +217,11 @@ void EnemyManagerComponent::ClearEnemies()
 void EnemyManagerComponent::SetPlayers(const std::vector<std::weak_ptr<ControllerComponent>>& players)
 {
 	m_Players = players;
+}
+
+void EnemyManagerComponent::SetVersusMode(bool state)
+{
+	m_VersusMode = state;
 }
 
 float EnemyManagerComponent::RandFloat(float min, float max)

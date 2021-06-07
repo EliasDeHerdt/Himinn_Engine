@@ -110,6 +110,14 @@ void QBertComponent::SetLives(int lives)
 	}
 }
 
+void QBertComponent::SetScore(int score)
+{
+	m_Score = score;
+	
+	if (!m_pSubjectComponent.expired())
+		m_pSubjectComponent.lock()->Notify(Himinn::EventInfo{ {m_Score}, {0.f}, {""} }, (unsigned)PlayerObserverEvent::PlayerScore);
+}
+
 void QBertComponent::GainScore(int scoreGain)
 {
 	m_Score += scoreGain;

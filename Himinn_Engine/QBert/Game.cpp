@@ -10,6 +10,7 @@
 #include "LevelManagerComponent.h"
 #include "SubjectComponent.h"
 #include "AudioLibrary.h"
+#include "EndMenuComponent.h"
 #include "SoundServiceLocator.h"
 #include "SoundLogger.h"
 #include "SDLSoundSytem.h"
@@ -17,7 +18,7 @@
 #include "EnemyManagerComponent.h"
 #include "imgui.h"
 #include "ManagerObserver.h"
-#include "SlickAndSamComponent.h"
+#include "MainMenuComponent.h"
 
 Game::Game()
 	: Minigin()
@@ -43,21 +44,20 @@ Game::Game()
 
 void Game::LoadGame()
 {
-	//m_PlayerManagerComponent->SetGameMode(GameMode::Coop);
-	m_LevelManagerComponent->AddLevel("Level1", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt");
-	m_LevelManagerComponent->AddLevel("Level2", "../Data/QBert/LevelSettings/LevelSettings_Level2.txt");
-	m_LevelManagerComponent->AddLevel("Level3", "../Data/QBert/LevelSettings/LevelSettings_Level3.txt");
+	Himinn::InputManager::GetInstance().SetAmountOfPlayers(2);
+	auto mainMenu = Himinn::SceneManager::GetInstance().CreateScene("MainMenu");
 
-	/*Himinn::InputManager& inputManager = Himinn::InputManager::GetInstance();
-	inputManager.AddCommand("SnekMoveTopLeft", new MoveCommand(go, Himinn::QBertDirection::TopLeft));
-	inputManager.AddCommand("SnekTopRight", new MoveCommand(go, Himinn::QBertDirection::TopRight));
-	inputManager.AddCommand("SnekBottomLeft", new MoveCommand(go, Himinn::QBertDirection::BottomLeft));
-	inputManager.AddCommand("SnekBottomRight", new MoveCommand(go, Himinn::QBertDirection::BottomRight));
-	
-	inputManager.BindButtonInput(0, VK_PAD_DPAD_UP, "SnekMoveTopLeft");
-	inputManager.BindButtonInput(0, VK_PAD_DPAD_RIGHT, "SnekTopRight");
-	inputManager.BindButtonInput(0, VK_PAD_DPAD_LEFT, "SnekBottomLeft");
-	inputManager.BindButtonInput(0, VK_PAD_DPAD_DOWN, "SnekBottomRight");*/
+	auto go = std::make_shared<Himinn::GameObject>();
+	auto mainMenuComp = std::make_shared<MainMenuComponent>(go, m_LevelManagerComponent, m_EnemyManagerComponent, m_PlayerManagerComponent);
+	go->AddComponent<MainMenuComponent>(mainMenuComp);
+	mainMenu.lock()->Add(go);
+
+	auto endScreen = Himinn::SceneManager::GetInstance().CreateScene("EndScreen");
+
+	go = std::make_shared<Himinn::GameObject>();
+	auto endMenuComp = std::make_shared<EndMenuComponent>(go);
+	go->AddComponent<EndMenuComponent>(endMenuComp);
+	endScreen.lock()->Add(go);
 	
 	// SoundService
 	Himinn::SoundServiceLocator::RegisterSoundSystem(new Himinn::SoundLogger(new Himinn::SDLSoundSytem()));
@@ -68,7 +68,6 @@ void Game::LoadGame()
 	// Audio
 	Himinn::AudioLibrary::GetInstance().AddAudioFile("../Data/QBert/Audio/Elevator.wav");
 
-	m_LevelManagerComponent->StartGame();
 }
 
 void Game::Cleanup()

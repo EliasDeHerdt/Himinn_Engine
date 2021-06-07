@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 
+class MoveCommand;
 class ControllerComponent;
 
 namespace Himinn {
@@ -34,9 +35,11 @@ public:
 	void SpawnCoily();
 	void ClearEnemies();
 	void SetPlayers(const std::vector<std::weak_ptr<ControllerComponent>>& players);
+	void SetVersusMode(bool state);
 
 private:
 	bool m_Active;
+	bool m_VersusMode;
 	
 	float m_MinSpawnDelaySS;
 	float m_MinSpawnDelayUW;
@@ -51,6 +54,13 @@ private:
 	float m_TimerCoily;
 	
 	float m_StepDelay;
+
+	// DUE TO LACK OF TIME
+	std::weak_ptr<MoveCommand> m_pCoilyTopLeftCommand;
+	std::weak_ptr<MoveCommand> m_pCoilyTopRightCommand;
+	std::weak_ptr<MoveCommand> m_pCoilyBottomLeftCommand;
+	std::weak_ptr<MoveCommand> m_pCoilyBottomRightCommand;
+	//----------------------
 
 	std::weak_ptr<Himinn::GameObject> m_Coily;
 	std::vector<std::weak_ptr<Himinn::GameObject>> m_Enemies;

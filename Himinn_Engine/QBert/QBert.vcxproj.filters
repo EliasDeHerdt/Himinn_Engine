@@ -96,7 +96,10 @@
     <ClCompile Include="UggAndWrongwayComponent.cpp">
       <Filter>Components\Characters</Filter>
     </ClCompile>
-    <ClCompile Include="UIComponent.cpp">
+    <ClCompile Include="MainMenuComponent.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="EndMenuComponent.cpp">
       <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,7 +161,10 @@
     <ClInclude Include="UggAndWrongwayComponent.h">
       <Filter>Components\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="UIComponent.h">
+    <ClInclude Include="MainMenuComponent.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="EndMenuComponent.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
   </ItemGroup>

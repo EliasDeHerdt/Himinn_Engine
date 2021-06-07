@@ -121,10 +121,10 @@ void CoilyComponent::Move()
 		return;
 
 	int direction = rand() % 2;
-
-	RemoveFromNode();
+	
 	if (!m_Snake)
 	{
+		RemoveFromNode();
 		switch (direction)
 		{
 		case 0:
@@ -155,6 +155,7 @@ void CoilyComponent::Move()
 	}
 	else if (m_pControllerComponent.expired())
 	{
+		RemoveFromNode();
 		if (!UpdateTarget())
 			return;
 		

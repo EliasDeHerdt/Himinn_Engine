@@ -177,9 +177,9 @@ bool ControllerComponent::SetGridPosition(Himinn::IVector2 position)
 	if (m_pGridComponent.expired())
 		return false;
 
-	bool samePos = (m_GridPosition == position);
+	bool sameSpot = (m_GridPosition == position);
 
-	if (!samePos)
+	if (!sameSpot)
 		RemoveFromNode();
 	
 	m_GridPosition = position;
@@ -191,7 +191,7 @@ bool ControllerComponent::SetGridPosition(Himinn::IVector2 position)
 
 	m_Owner.lock()->SetPosition(m_pGridComponent.lock()->GetNodeCharacterPosition(m_GridPosition.x, m_GridPosition.y));
 
-	if (!samePos)
+	if (!sameSpot)
 		AddToNode();
 
 	return true;

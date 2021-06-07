@@ -118,7 +118,7 @@ void Himinn::Minigin::LoadGame()
 
 	// Score Component
 	go = std::make_shared<GameObject>();
-	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
+	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, 0, font, color));
 	go->SetPosition(10, 410);
 	scene.lock()->Add(go);
 	
@@ -142,7 +142,7 @@ void Himinn::Minigin::LoadGame()
 
 	// Score Component
 	go = std::make_shared<GameObject>();
-	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, font, color));
+	go->AddComponent<ScoreComponent>(make_shared<ScoreComponent>(go, 0, font, color));
 	go->SetPosition(10, 450);
 	scene.lock()->Add(go);
 	
@@ -157,10 +157,10 @@ void Himinn::Minigin::LoadGame()
 	InputManager& inputManager = InputManager::GetInstance();
 	
 	// Player 1 Commands
-	inputManager.AddCommand("PlayerOneDies", new ObjectDiesCommand(player1));
+	inputManager.AddCommand("PlayerOneDies", std::make_shared<ObjectDiesCommand>(player1));
 
 	// Player 2 Commands
-	inputManager.AddCommand("PlayerTwoDies", new ObjectDiesCommand(player2));
+	inputManager.AddCommand("PlayerTwoDies", std::make_shared<ObjectDiesCommand>(player2));
 	
 	// Binds
 	inputManager.BindButtonInput(0, VK_PAD_A, "PlayerOneJumpPlatform");
@@ -194,11 +194,6 @@ void Himinn::Minigin::Cleanup()
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	SDL_Quit();
-}
-
-void Himinn::Minigin::UIRender()
-{
-	;
 }
 
 void Himinn::Minigin::Run()

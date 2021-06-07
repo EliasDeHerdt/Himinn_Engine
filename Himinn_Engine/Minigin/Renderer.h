@@ -22,6 +22,7 @@ namespace Himinn
 		int GetOpenGLDriverIndex();
 		
 		SDL_Renderer* GetSDLRenderer() const { return m_Renderer; }
+		SDL_Window* GetWindow() const { return m_Window; }
 	private:
 		SDL_Renderer* m_Renderer{};
 		SDL_Window* m_Window = nullptr;

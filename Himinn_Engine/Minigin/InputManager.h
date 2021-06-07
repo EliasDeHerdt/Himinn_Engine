@@ -50,6 +50,8 @@ namespace Himinn
 
 		std::weak_ptr<Command> command;
 		InputMode mode = InputMode::down;
+
+		bool IsController = true;
 	};
 
 	class InputManager final : public Singleton<InputManager>
@@ -58,13 +60,17 @@ namespace Himinn
 		bool ProcessInput();
 		//bool IsPressed(int keyCode) const;
 
-		void AddCommand(std::string tag, Command* command);
+		void AddCommand(std::string tag, std::shared_ptr<Command> command);
 		
 		void BindButtonInput(unsigned player, unsigned keyCode, std::string commandTag, InputMode mode = InputMode::down);
+		void BindButtonInput(unsigned keyCode, std::string commandTag, InputMode mode = InputMode::down);
 		void SetAmountOfPlayers(int amountOfPlayers);
+
+		void StopGame() { m_StopGame = true; }
 	private:
+		bool m_StopGame = false;
 		bool m_InputMade = false;
-		int m_AmountOfPlayers = 1;
+		int m_AmountOfControllers = 1;
 		XINPUT_KEYSTROKE m_Stroke{};
 		std::map<ButtonInfo, InputInfo> m_Inputs = {};
 		std::map<std::string, std::shared_ptr<Command>> m_Commands= {};

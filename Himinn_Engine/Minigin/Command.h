@@ -12,7 +12,7 @@ namespace Himinn
 		Command(std::weak_ptr<GameObject> gameObject) : m_GameObject(gameObject) {};
 		virtual ~Command() = default;
 		virtual void Execute() = 0;
-	private:
+	protected:
 		std::weak_ptr<GameObject> m_GameObject;
 	};
 

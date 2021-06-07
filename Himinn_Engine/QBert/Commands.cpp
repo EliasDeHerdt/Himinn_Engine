@@ -7,7 +7,7 @@
 
 // Move Command
 //*********************
-MoveCommand::MoveCommand(std::weak_ptr<Himinn::GameObject> gameObject, Himinn::QBertDirection direction)
+MoveCommand::MoveCommand(const std::weak_ptr<Himinn::GameObject>& gameObject, Himinn::QBertDirection direction)
 	: Command(gameObject)
 	, m_Direction(direction)
 	, m_CharacterComp(gameObject.lock()->GetComponent<ControllerComponent>())
@@ -23,4 +23,13 @@ void MoveCommand::Execute()
 	}
 
 	m_CharacterComp.lock()->Move(m_Direction);
+}
+
+void MoveCommand::SetGameObject(std::shared_ptr<Himinn::GameObject> gameObject)
+{
+	auto controllerComp = gameObject->GetComponent<ControllerComponent>();
+	if (controllerComp.expired())
+		return;
+
+	m_CharacterComp = controllerComp;
 }

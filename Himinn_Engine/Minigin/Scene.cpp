@@ -15,6 +15,14 @@ void Scene::Add(const std::shared_ptr<GameObject>& object)
 	m_Objects.push_back(object);
 }
 
+void Scene::Remove(const std::shared_ptr<GameObject>& object)
+{
+	m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(), [object](const std::shared_ptr<GameObject>& rhs)
+		{
+			return object == rhs;
+		}), m_Objects.end());
+}
+
 void Himinn::Scene::FixedUpdate()
 {
 	for (auto& object : m_Objects)

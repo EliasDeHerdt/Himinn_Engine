@@ -99,10 +99,8 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 			
 			// Player 2
 			player = make_shared<Himinn::GameObject>();
-			AddPlayer(player, "QBert/Characters/Character_QBert2.png", { VK_PAD_DPAD_UP, VK_PAD_DPAD_RIGHT , VK_PAD_DPAD_LEFT , VK_PAD_DPAD_DOWN , 0, true });
-
+			AddPlayer(player, "QBert/Characters/Character_QBert2.png", { SDLK_e, SDLK_r , SDLK_d , SDLK_f , 1, false });
 			player->GetComponent<ControllerComponent>().lock()->SetGridSpawnPosition(m_pGridComponent.lock()->GetRightPeakPosition());
-			//AddPlayer(player, { VK_PAD_Y, VK_PAD_B , VK_PAD_X , VK_PAD_A , 1, true });
 			break;
 		}	
 		case GameMode::Versus:
@@ -153,7 +151,7 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 
 		// Score Component
 		go = std::make_shared<Himinn::GameObject>();
-		go->AddComponent<Himinn::ScoreComponent>(make_shared<Himinn::ScoreComponent>(go, font, color));
+		go->AddComponent<Himinn::ScoreComponent>(make_shared<Himinn::ScoreComponent>(go, qbertComp.lock()->GetScore(), font, color));
 		go->SetPosition(10, float(40 +( 40 * i)));
 		scene.lock()->Add(go);
 		
@@ -182,6 +180,7 @@ void PlayerManagerComponent::SetupManagerForLevel(std::weak_ptr<Himinn::Scene> s
 
 void PlayerManagerComponent::PlayerDied()
 {
+	int playersAlive{ (int)m_Players.size() };
 	for (int i = 0; i < (int)m_Players.size(); ++i)
 	{
 		auto qbertComp = m_Players.at(i).first->GetComponent<QBertComponent>();
@@ -190,6 +189,7 @@ void PlayerManagerComponent::PlayerDied()
 		
 		if (qbertComp.lock()->GetLives() == 0)
 		{
+			--playersAlive;
 			m_Players.at(i).first->MarkForDestruction();
 		}
 	}
@@ -198,6 +198,15 @@ void PlayerManagerComponent::PlayerDied()
 		return;
 
 	m_SubjectComponent.lock()->Notify({}, (unsigned)ManagerObserverEvent::ClearEnemies);
+	if (playersAlive == 0)
+		m_SubjectComponent.lock()->Notify({}, (unsigned)ManagerObserverEvent::GameOver);
+
+}
+
+void PlayerManagerComponent::CleanUp()
+{
+	m_Players.clear();
+	m_PlayersInitialized = false;
 }
 
 void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& player, std::string texturePath, PlayerControls controls)
@@ -221,11 +230,11 @@ void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& play
 	m_Players.push_back(make_pair(player, controls));
 	
 	Himinn::InputManager& inputManager = Himinn::InputManager::GetInstance();
-	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) +  "MoveTopLeft", new MoveCommand(player, Himinn::QBertDirection::TopLeft));
-	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) + "TopRight", new MoveCommand(player, Himinn::QBertDirection::TopRight));
-	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) + "BottomLeft", new MoveCommand(player, Himinn::QBertDirection::BottomLeft));
-	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) + "BottomRight", new MoveCommand(player, Himinn::QBertDirection::BottomRight));
-	
+	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) +  "MoveTopLeft", std::make_shared<MoveCommand>(player, Himinn::QBertDirection::TopLeft));
+	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) + "TopRight", std::make_shared<MoveCommand>(player, Himinn::QBertDirection::TopRight));
+	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) + "BottomLeft", std::make_shared<MoveCommand>(player, Himinn::QBertDirection::BottomLeft));
+	inputManager.AddCommand("Player" + std::to_string(m_Players.size()) + "BottomRight", std::make_shared<MoveCommand>(player, Himinn::QBertDirection::BottomRight));
+
 	if (controls.controller)
 	{
 		inputManager.BindButtonInput(controls.playerNumber, controls.topLeft, "Player" + std::to_string(m_Players.size()) + "MoveTopLeft");
@@ -233,4 +242,12 @@ void PlayerManagerComponent::AddPlayer(std::shared_ptr<Himinn::GameObject>& play
 		inputManager.BindButtonInput(controls.playerNumber, controls.bottomLeft, "Player" + std::to_string(m_Players.size()) + "BottomLeft");
 		inputManager.BindButtonInput(controls.playerNumber, controls.bottomRight, "Player" + std::to_string(m_Players.size()) + "BottomRight");
 	}
+	else
+	{
+		inputManager.BindButtonInput(controls.topLeft, "Player" + std::to_string(m_Players.size()) + "MoveTopLeft");
+		inputManager.BindButtonInput(controls.topRight, "Player" + std::to_string(m_Players.size()) + "TopRight");
+		inputManager.BindButtonInput(controls.bottomLeft, "Player" + std::to_string(m_Players.size()) + "BottomLeft");
+		inputManager.BindButtonInput(controls.bottomRight, "Player" + std::to_string(m_Players.size()) + "BottomRight");
+	}
+
 }

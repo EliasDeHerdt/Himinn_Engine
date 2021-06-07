@@ -3,7 +3,6 @@
 
 #include "Minigin.h"
 
-
 namespace Himinn {
 	class GameObject;
 }
@@ -21,9 +20,6 @@ public:
 	void Cleanup() override;
 
 private:
-	bool m_ShowHud = true;
-	bool m_ShowTutorial = false;
-	
 	std::shared_ptr<ManagerObserver> m_ManagerObserver;
 	std::shared_ptr<Himinn::GameObject> m_ManagerObject;
 	std::shared_ptr<LevelManagerComponent> m_LevelManagerComponent;

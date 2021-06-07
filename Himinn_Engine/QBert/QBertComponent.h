@@ -43,6 +43,7 @@ public:
 
 	void LoseLife();
 	void SetLives(int lives);
+	void SetScore(int score);
 	void GainScore(int score);
 
 private:

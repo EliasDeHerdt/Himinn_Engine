@@ -12,6 +12,7 @@ namespace Himinn
 		std::weak_ptr<Himinn::Scene> CreateScene(const std::string& name);
 		void SetActiveScene(const std::string& name);
 		std::weak_ptr<Scene> GetActiveScene() const;
+		void RemoveScene(const std::string& name);
 		
 		void FixedUpdate();
 		void Update();

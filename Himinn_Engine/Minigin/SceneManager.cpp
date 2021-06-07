@@ -59,6 +59,11 @@ void Himinn::SceneManager::LateUpdate()
 	if (!m_NewActiveScene.expired()
 		&& m_NewActiveScene.lock() != m_ActiveScene.lock())
 		m_ActiveScene = m_NewActiveScene;
+
+	m_Scenes.erase(std::remove_if(m_Scenes.begin(), m_Scenes.end(), [](std::shared_ptr<Scene> rhs)
+		{
+			return rhs->ShouldBeDestroyed();
+		}), m_Scenes.end());
 }
 
 void Himinn::SceneManager::Render()

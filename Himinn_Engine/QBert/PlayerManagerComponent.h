@@ -46,6 +46,7 @@ public:
 	void MovePlayersToSpawns();
 	void SetupManagerForLevel(std::weak_ptr<Himinn::Scene> scene, std::weak_ptr<GridComponent> grid);
 	void PlayerDied();
+	void CleanUp();
 
 private:
 	GameMode m_GameMode;

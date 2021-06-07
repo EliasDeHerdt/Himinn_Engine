@@ -15,7 +15,6 @@ namespace Himinn
 		void Initialize();
 		virtual void LoadGame();
 		virtual void Cleanup();
-		virtual void UIRender();
 		void Run();
 	
 	protected:

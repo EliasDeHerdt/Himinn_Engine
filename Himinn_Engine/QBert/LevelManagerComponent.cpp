@@ -54,12 +54,7 @@ void LevelManagerComponent::OnAddedToObject()
 
 void LevelManagerComponent::StartGame()
 {
-	auto scene = m_LevelScenes.at(m_ActiveLevel);
-	if (m_Owner.expired()
-		|| scene.expired())
-		return;
-	
-	scene.lock()->Add(m_Owner.lock());
+	TransferLevel();
 	NotifyObserver();
 }
 
@@ -69,6 +64,11 @@ void LevelManagerComponent::LevelCompleted()
 	{
 		SetActiveLevel(m_ActiveLevel + 1);
 		NotifyObserver();
+	}
+	else
+	{
+		m_LevelScenes.at(m_ActiveLevel).lock()->Add(m_Owner.lock());
+		CleanUp();
 	}
 }
 
@@ -82,14 +82,9 @@ void LevelManagerComponent::AddLevel(std::string name, std::string settingsPath)
 	// Font & color
 	SDL_Color color = SDL_Color{ 0, 255, 0 };
 	std::shared_ptr<Himinn::Font> font = Himinn::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	
-	// Background
-	auto go = std::make_shared<Himinn::GameObject>();
-	go->AddComponent<Himinn::ImageComponent>(make_shared<Himinn::ImageComponent>(go, "background.jpg"));
-	scene.lock()->Add(go);
 
 	// Grid
-	go = std::make_shared<Himinn::GameObject>();
+	auto go = std::make_shared<Himinn::GameObject>();
 	auto subjectComp = make_shared<Himinn::SubjectComponent>(go);
 	subjectComp->AddObserver(m_pGridObserver);
 	go->AddComponent<Himinn::SubjectComponent>(subjectComp);
@@ -142,7 +137,8 @@ void LevelManagerComponent::SetActiveLevel(unsigned level)
 	{
 		if (m_ActiveLevel == level)
 			return;
-		
+
+		m_LevelScenes.at(m_ActiveLevel).lock()->Add(m_Owner.lock());
 		m_ActiveLevel = level;
 		TransferLevel();
 	}
@@ -163,6 +159,21 @@ void LevelManagerComponent::SetActiveLevel(std::string name)
 		SetActiveLevel(index);
 	else
 		std::cout << "LevelManagerComponent: No level with name " << name << " found, no changes where made.";
+}
+
+void LevelManagerComponent::CleanUp()
+{
+	Himinn::SceneManager::GetInstance().SetActiveScene("EndScreen");
+	for (auto scene : m_LevelScenes)
+	{
+		if (scene.expired())
+			continue;
+
+		scene.lock()->MarkForDestruction();
+	}
+	
+	m_LevelGrids.clear();
+	m_LevelScenes.clear();
 }
 
 void LevelManagerComponent::TransferLevel()

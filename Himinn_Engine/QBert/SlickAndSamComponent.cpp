@@ -30,7 +30,7 @@ void SlickAndSamComponent::Update()
 	m_MoveTime += dt;
 	if (m_MoveTime >= m_MoveDelay)
 	{
-		m_MoveTime -= m_MoveDelay;
+		m_MoveTime = 0;
 		Move();
 	}
 }
