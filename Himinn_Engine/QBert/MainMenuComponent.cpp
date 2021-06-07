@@ -95,8 +95,8 @@ void MainMenuComponent::CreateLevels() const
 		return;
 
 	m_pLevelManagerComponent.lock()->AddLevel("Level1", "../Data/QBert/LevelSettings/LevelSettings_Level1.txt");
-	//m_pLevelManagerComponent.lock()->AddLevel("Level2", "../Data/QBert/LevelSettings/LevelSettings_Level2.txt");
-	//m_pLevelManagerComponent.lock()->AddLevel("Level3", "../Data/QBert/LevelSettings/LevelSettings_Level3.txt");
+	m_pLevelManagerComponent.lock()->AddLevel("Level2", "../Data/QBert/LevelSettings/LevelSettings_Level2.txt");
+	m_pLevelManagerComponent.lock()->AddLevel("Level3", "../Data/QBert/LevelSettings/LevelSettings_Level3.txt");
 
 	m_pLevelManagerComponent.lock()->StartGame();
 }
