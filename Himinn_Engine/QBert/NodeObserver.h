@@ -9,7 +9,7 @@ enum class NodeObserverEvent
 };
 
 class GridComponent;
-class NodeObserver : public Himinn::Observer
+class NodeObserver final : public Himinn::Observer
 {
 public:
 	NodeObserver() = default;

@@ -19,21 +19,21 @@ enum class ScoreGain
 };
 
 
-class QBertComponent : public ControllableComponent
+class QBertComponent final : public ControllableComponent
 {
 public:
 	QBertComponent(const std::weak_ptr<Himinn::GameObject>& owner, int lives, std::string TexturePath);
-	virtual ~QBertComponent() override = default;
+	~QBertComponent() override = default;
 	QBertComponent(const QBertComponent& other) = delete;
 	QBertComponent& operator=(const QBertComponent& other) = delete;
 	QBertComponent(QBertComponent&& other) = delete;
 	QBertComponent& operator=(QBertComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
 	void OnDeath() override;
 	void OnScore(int amount) override;

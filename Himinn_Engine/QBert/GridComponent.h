@@ -12,30 +12,30 @@ namespace Himinn {
 }
 
 class NodeObserver;
-class GridComponent : public Himinn::Component
+class GridComponent final : public Himinn::Component
 {
 public:
 	GridComponent(const std::weak_ptr<Himinn::GameObject>& owner, std::weak_ptr<Himinn::Scene> scene, const std::string& filePath);
-	virtual ~GridComponent() override = default;
+	~GridComponent() override = default;
 	GridComponent(const GridComponent& other) = delete;
 	GridComponent& operator=(const GridComponent& other) = delete;
 	GridComponent(GridComponent&& other) = delete;
 	GridComponent& operator=(GridComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
 	void ReadGridSettingsFile(const std::string& filePath);
-	void UpgradeNode(int layer, int number);
+	void UpgradeNode(int layer, int number) const;
 	void UpdateNodeCompletion(bool nodeReady);
-	void CheckLevelFinished();
+	void CheckLevelFinished() const;
 
-	unsigned GetLayerAmount();
-	Himinn::IVector2 GetLeftPeakPosition();
-	Himinn::IVector2 GetRightPeakPosition();
+	unsigned GetLayerAmount() const;
+	Himinn::IVector2 GetLeftPeakPosition() const;
+	Himinn::IVector2 GetRightPeakPosition() const;
 	Himinn::IVector2 GetNodeCharacterPosition(int layer, int number);
 	std::weak_ptr<Himinn::GameObject> GetNode(int layer, int number) const;
 	bool CheckForLift(int layer, int number);

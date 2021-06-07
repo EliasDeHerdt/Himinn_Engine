@@ -14,21 +14,21 @@ namespace Himinn {
 
 class GridObserver;
 class GridComponent;
-class LevelManagerComponent : public Himinn::Component
+class LevelManagerComponent final : public Himinn::Component
 {
 public:
 	LevelManagerComponent(const std::weak_ptr<Himinn::GameObject>& owner);
-	virtual ~LevelManagerComponent() override = default;
+	~LevelManagerComponent() override = default;
 	LevelManagerComponent(const LevelManagerComponent& other) = delete;
 	LevelManagerComponent& operator=(const LevelManagerComponent& other) = delete;
 	LevelManagerComponent(LevelManagerComponent&& other) = delete;
 	LevelManagerComponent& operator=(LevelManagerComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
 	void StartGame();
 	void LevelCompleted();

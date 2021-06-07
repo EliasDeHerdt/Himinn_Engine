@@ -11,26 +11,26 @@ namespace Himinn {
 
 class GridComponent;
 class ControllableComponent;
-class ControllerComponent : public Himinn::Component
+class ControllerComponent final : public Himinn::Component
 {
 public:
 	ControllerComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid);
-	virtual ~ControllerComponent() override = default;
+	~ControllerComponent() override = default;
 	ControllerComponent(const ControllerComponent& other) = delete;
 	ControllerComponent& operator=(const ControllerComponent& other) = delete;
 	ControllerComponent(ControllerComponent&& other) = delete;
 	ControllerComponent& operator=(ControllerComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
 	void Move(Himinn::QBertDirection direction);
 	void MoveToSpawn();
 	void Die();
-	void GainScore(int score);
+	void GainScore(int score) const;
 	
 	void SetEnableMovement(bool state);
 	void SetGrid(const std::weak_ptr<GridComponent>& grid);
@@ -58,6 +58,6 @@ private:
 	std::weak_ptr<GridComponent> m_pGridComponent;
 	std::weak_ptr<ControllableComponent> m_pControllableComponent;
 
-	void AddToNode();
-	void RemoveFromNode();
+	void AddToNode() const;
+	void RemoveFromNode() const;
 };

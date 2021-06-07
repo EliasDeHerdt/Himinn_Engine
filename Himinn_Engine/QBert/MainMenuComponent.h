@@ -5,24 +5,24 @@ enum class GameMode;
 class LevelManagerComponent;
 class EnemyManagerComponent;
 class PlayerManagerComponent;
-class MainMenuComponent : public Himinn::Component
+class MainMenuComponent final : public Himinn::Component
 {
 public:
 	MainMenuComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<LevelManagerComponent>& levelManager, const std::weak_ptr<EnemyManagerComponent>& enemyManager, const std::weak_ptr<PlayerManagerComponent>& playerManager);
-	virtual ~MainMenuComponent() override = default;
+	~MainMenuComponent() override = default;
 	MainMenuComponent(const MainMenuComponent& other) = delete;
 	MainMenuComponent& operator=(const MainMenuComponent& other) = delete;
 	MainMenuComponent(MainMenuComponent&& other) = delete;
 	MainMenuComponent& operator=(MainMenuComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
-	void SetGameMode(GameMode gamemode);
-	void CreateLevels();
+	void SetGameMode(GameMode gamemode) const;
+	void CreateLevels() const;
 
 private:
 	bool m_ShowHud = true;

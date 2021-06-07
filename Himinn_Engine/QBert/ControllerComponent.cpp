@@ -149,7 +149,7 @@ void ControllerComponent::Die()
 	SetGridPosition(m_GridPosition.x, m_GridPosition.y);
 }
 
-void ControllerComponent::GainScore(int score)
+void ControllerComponent::GainScore(int score) const
 {
 	if (m_pControllableComponent.expired())
 		return;
@@ -212,7 +212,7 @@ Himinn::IVector2 ControllerComponent::GetGridPosition() const
 	return m_GridPosition;
 }
 
-void ControllerComponent::AddToNode()
+void ControllerComponent::AddToNode() const
 {
 	if (m_Owner.expired()
 		|| m_pGridComponent.expired())
@@ -229,7 +229,7 @@ void ControllerComponent::AddToNode()
 	nodeComp.lock()->AddGameObject(m_Owner);
 }
 
-void ControllerComponent::RemoveFromNode()
+void ControllerComponent::RemoveFromNode() const
 {
 	if (m_Owner.expired()
 		|| m_pGridComponent.expired())

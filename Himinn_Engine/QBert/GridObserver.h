@@ -8,11 +8,11 @@ enum class GridObserverEvent
 };
 
 class LevelManagerComponent;
-class GridObserver : public Himinn::Observer
+class GridObserver final : public Himinn::Observer
 {
 public:
 	GridObserver() = default;
-	~GridObserver() = default;
+	~GridObserver() override = default;
 	GridObserver(const GridObserver& other) = delete;
 	GridObserver& operator=(const GridObserver& other) = delete;
 	GridObserver(GridObserver&& other) = delete;

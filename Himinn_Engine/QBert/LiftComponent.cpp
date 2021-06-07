@@ -48,7 +48,7 @@ void LiftComponent::SetPlayerOffset(Himinn::IVector2 offset)
 	m_PlayerOffset = offset;
 }
 
-void LiftComponent::Activate()
+void LiftComponent::Activate() const
 {
 	Himinn::SoundServiceLocator::GetSoundSystem()->QueueSound(0, 100);
 	m_Owner.lock()->MarkForDestruction();

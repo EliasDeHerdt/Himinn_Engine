@@ -11,21 +11,21 @@ namespace Himinn {
 	class SubjectComponent;
 }
 
-class NodeComponent : public Himinn::Component
+class NodeComponent final : public Himinn::Component
 {
 public:
 	NodeComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::vector<std::string>& textures, Himinn::IVector2 playerOffset = {0, 0}, unsigned int startLevel = 0, bool cycleLevels = false);
-	virtual ~NodeComponent() override = default;
+	~NodeComponent() override = default;
 	NodeComponent(const NodeComponent& other) = delete;
 	NodeComponent& operator=(const NodeComponent& other) = delete;
 	NodeComponent(NodeComponent&& other) = delete;
 	NodeComponent& operator=(NodeComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
 	const Himinn::IVector2& GetPlayerOffset() const;
 	void SetPlayerOffset(Himinn::IVector2 position);

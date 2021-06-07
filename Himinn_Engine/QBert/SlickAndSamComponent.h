@@ -9,23 +9,23 @@ namespace Himinn {
 }
 
 class GridComponent;
-class SlickAndSamComponent : public EnemyComponent
+class SlickAndSamComponent final : public EnemyComponent
 {
 public:
 	SlickAndSamComponent(const std::weak_ptr<Himinn::GameObject>& owner, const std::weak_ptr<GridComponent>& grid, float moveDelay);
-	virtual ~SlickAndSamComponent() override = default;
+	~SlickAndSamComponent() override = default;
 	SlickAndSamComponent(const SlickAndSamComponent& other) = delete;
 	SlickAndSamComponent& operator=(const SlickAndSamComponent& other) = delete;
 	SlickAndSamComponent(SlickAndSamComponent&& other) = delete;
 	SlickAndSamComponent& operator=(SlickAndSamComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
-	virtual void OnOverlap(std::weak_ptr<Himinn::GameObject> other) override;
+	void OnOverlap(std::weak_ptr<Himinn::GameObject> other) override;
 
 	void Spawn();
 

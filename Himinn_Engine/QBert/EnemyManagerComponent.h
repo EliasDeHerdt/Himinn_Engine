@@ -13,21 +13,21 @@ namespace Himinn {
 }
 
 class GridComponent;
-class EnemyManagerComponent : public Himinn::Component
+class EnemyManagerComponent final : public Himinn::Component
 {
 public:
 	EnemyManagerComponent(const std::weak_ptr<Himinn::GameObject>& owner);
-	virtual ~EnemyManagerComponent() override = default;
+	~EnemyManagerComponent() override = default;
 	EnemyManagerComponent(const EnemyManagerComponent& other) = delete;
 	EnemyManagerComponent& operator=(const EnemyManagerComponent& other) = delete;
 	EnemyManagerComponent(EnemyManagerComponent&& other) = delete;
 	EnemyManagerComponent& operator=(EnemyManagerComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
 	void SetupManagerForLevel(const std::weak_ptr<Himinn::Scene>& scene, const std::weak_ptr<GridComponent>& grid);
 	void SpawnSlickOrSam();
@@ -70,6 +70,6 @@ private:
 	std::weak_ptr<GridComponent> m_pGridComponent;
 	std::weak_ptr<Himinn::SubjectComponent> m_SubjectComponent;
 
-	float RandFloat(float min, float max);
+	float RandFloat(float min, float max) const;
 	void CheckDeadEnemies();
 };

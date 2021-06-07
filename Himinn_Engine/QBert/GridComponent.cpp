@@ -132,7 +132,7 @@ void GridComponent::ReadGridSettingsFile(const std::string& filePath)
 	}
 }
 
-void GridComponent::UpgradeNode(int layer, int number)
+void GridComponent::UpgradeNode(int layer, int number) const
 {
 	GetNode(layer, number).lock()->GetComponent<NodeComponent>().lock()->IncrementNodeLevel();
 }
@@ -148,24 +148,24 @@ void GridComponent::UpdateNodeCompletion(bool nodeReady)
 		--m_NodesCompleted;
 }
 
-void GridComponent::CheckLevelFinished()
+void GridComponent::CheckLevelFinished() const
 {
 	if (m_NodesCompleted == m_pNodes.size()
 		&& !m_pSubjectComponent.expired())
 		m_pSubjectComponent.lock()->Notify({}, (unsigned)GridObserverEvent::GridCompleted);
 }
 
-unsigned GridComponent::GetLayerAmount()
+unsigned GridComponent::GetLayerAmount() const
 {
 	return m_NodeLayerAmount;
 }
 
-Himinn::IVector2 GridComponent::GetLeftPeakPosition()
+Himinn::IVector2 GridComponent::GetLeftPeakPosition() const
 {
 	return {(int)m_NodeLayerAmount - 1, 0 };
 }
 
-Himinn::IVector2 GridComponent::GetRightPeakPosition()
+Himinn::IVector2 GridComponent::GetRightPeakPosition() const
 {
 	return { (int)m_NodeLayerAmount - 1, (int)m_NodeLayerAmount - 1 };
 }

@@ -3,8 +3,6 @@
 
 #include "Observer.h"
 
-
-
 enum class ManagerObserverEvent
 {
 	LevelLoaded,
@@ -16,7 +14,7 @@ enum class ManagerObserverEvent
 class LevelManagerComponent;
 class EnemyManagerComponent;
 class PlayerManagerComponent;
-class ManagerObserver : public Himinn::Observer
+class ManagerObserver final : public Himinn::Observer
 {
 public:
 	ManagerObserver() = default;

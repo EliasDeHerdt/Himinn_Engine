@@ -26,21 +26,21 @@ struct PlayerControls
 
 class PlayerObserver;
 class GridComponent;
-class PlayerManagerComponent : public Himinn::Component
+class PlayerManagerComponent final : public Himinn::Component
 {
 public:
 	PlayerManagerComponent(const std::weak_ptr<Himinn::GameObject>& owner);
-	virtual ~PlayerManagerComponent() override = default;
+	~PlayerManagerComponent() override = default;
 	PlayerManagerComponent(const PlayerManagerComponent& other) = delete;
 	PlayerManagerComponent& operator=(const PlayerManagerComponent& other) = delete;
 	PlayerManagerComponent(PlayerManagerComponent&& other) = delete;
 	PlayerManagerComponent& operator=(PlayerManagerComponent&& other) = delete;
 
-	virtual void FixedUpdate() override;
-	virtual void Update() override;
-	virtual void LateUpdate() override;
-	virtual void Render() override;
-	virtual void OnAddedToObject() override;
+	void FixedUpdate() override;
+	void Update() override;
+	void LateUpdate() override;
+	void Render() override;
+	void OnAddedToObject() override;
 
 	void SetGameMode(GameMode gameMode);
 	void MovePlayersToSpawns();

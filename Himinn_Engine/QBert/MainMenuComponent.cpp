@@ -81,7 +81,7 @@ void MainMenuComponent::OnAddedToObject()
 {
 }
 
-void MainMenuComponent::SetGameMode(GameMode gamemode)
+void MainMenuComponent::SetGameMode(GameMode gamemode) const
 {
 	if (m_pPlayerManagerComponent.expired())
 		return;
@@ -89,7 +89,7 @@ void MainMenuComponent::SetGameMode(GameMode gamemode)
 	m_pPlayerManagerComponent.lock()->SetGameMode(gamemode);
 }
 
-void MainMenuComponent::CreateLevels()
+void MainMenuComponent::CreateLevels() const
 {
 	if (m_pLevelManagerComponent.expired())
 		return;

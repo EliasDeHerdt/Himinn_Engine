@@ -224,7 +224,7 @@ void EnemyManagerComponent::SetVersusMode(bool state)
 	m_VersusMode = state;
 }
 
-float EnemyManagerComponent::RandFloat(float min, float max)
+float EnemyManagerComponent::RandFloat(float min, float max) const
 {
 	return min + float(rand()) / float(RAND_MAX / (max - min));
 }
